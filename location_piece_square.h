@@ -23,22 +23,15 @@ struct Location{
     int column;
     Location()= default;
    ~Location()= default;
-    Location(int new_row ,int new_column): row(new_row),column(new_column){
-    }
+    Location(int new_row ,int new_column): row(new_row),column(new_column){}
     Location(const Location& location) = default;
-    Location(Location&& location) noexcept :row(location.row), column(location.column){} ;
-
+    Location(Location&& location) noexcept = default;
     bool operator==(Location location){
         return row == location.row &&
                column == location.column;
     }
     Location& operator=(const Location& location)= default;
-    Location& operator= (Location&& location) noexcept{
-        row = location.row;
-        column = location.column;
-        return  *this;
-    }
-
+    Location& operator= (Location&& location) noexcept = default;
 
 };
 

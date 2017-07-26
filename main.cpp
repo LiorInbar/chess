@@ -3,12 +3,12 @@
 #include "state.h"
 
 
-void print_board(State state) {
+void print_board(const State& state) {
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
-            if(!state.getSqaure(Location(i,j)).is_empty())
-                cout<<"("+color_to_string(state.getSqaure(Location(i,j)).piece->color)+","
-                      +piece_type_to_string(state.getSqaure(Location(i,j)).piece->type)+")"+" ";
+            if(!state.getSquare(Location(i,j)).is_empty())
+                cout<<"("+color_to_string(state.getSquare(Location(i,j)).piece->color)+","
+                      +piece_type_to_string(state.getSquare(Location(i,j)).piece->type)+")"+" ";
             else
                 cout<<"empty ";
         }
@@ -38,7 +38,7 @@ void initial_state() {
     white_pieces.push_back(white_knight2);
 
     for (int c = 0; c <= 7; c++) {
-        white_pieces.push_back(Piece(PAWN, WHITE, Location(1, c)));
+        white_pieces.emplace_back(Piece(PAWN, WHITE, Location(1, c)));
     }
 
     vector<Piece> black_pieces;
@@ -61,12 +61,12 @@ void initial_state() {
     black_pieces.push_back(black_knight2);
 
     for (int c = A; c <= H; c++) {
-        black_pieces.push_back(Piece(PAWN, BLACK, Location(6, c)));
+        black_pieces.emplace_back(Piece(PAWN, BLACK, Location(6, c)));
     }
 
     vector<vector <Square>> board;
     for (int i = 0; i < 8; i++) {
-        board.push_back(vector <Square>());
+        board.emplace_back(vector <Square>());
         for (int j = A; j <= H; j++) {
             Square square(i,j);
             board[i].push_back(square);
@@ -82,40 +82,33 @@ void initial_state() {
     State state(board, WHITE, white_pieces, black_pieces);
     print_board(state);
     cout<<"-----------------"<<endl;
-    Piece* pawny = state.getSqaure(Location(1,A)).piece;
+    Piece* pawny = state.getSquare(Location(1,A)).piece;
     state.make_move(*pawny,Location(3,A));
     print_board(state);
     cout<<"-----------------"<<endl;
 
-    Piece* knighty = state.getSqaure(Location(7,B)).piece;
+    Piece* knighty = state.getSquare(Location(7,B)).piece;
     state.make_move(*knighty,Location(5,A));
     print_board(state);
     cout<<"-----------------"<<endl;
     for(Location loc:state.available_locations(*pawny)){
        print_location(loc);
     }
-}
-
-typedef struct k{
-    vector<int> v;
-    vector<int*> vvv;
-} kk;
-
-kk foo(){
-    vector<int> v;
-    vector<int*> vvv;
-    for(int i=1;i<6000;i++){
-        v.push_back(i);
+    for(Location loc:state.available_locations(*knighty)){
+        print_location(loc);
     }
-    kk f;
-    f.v=v;
-    f.vvv=vvv;
-    return f;
+
 }
+
+
+
+
+
 
 
 int main() {
     initial_state();
+
 
     return 0;
 }

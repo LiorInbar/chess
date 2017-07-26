@@ -5,14 +5,13 @@
 #include "state.h"
 #include <cmath>
 #include <iostream>
-#include <string>
-
+#include <utility>
 
 
 State::State(vector<vector<Square>> new_board, Color new_turn, vector<Piece> new_white_pieces,
              vector<Piece> new_black_pieces):
-        turn(new_turn),white_pieces(new_white_pieces),
-        black_pieces(new_black_pieces),
+        turn(new_turn),white_pieces(std::move(new_white_pieces)),
+        black_pieces(std::move(new_black_pieces)),
         en_passant_location(Location(0,0)){
     for (int index = 0; index < 8; index++){
         board.emplace_back(vector<Square>());
@@ -346,7 +345,8 @@ vector<Location> State::direct_course_rook(Piece piece) {
                 break;
             }
         }
-        locations.push_back(row[index]);
+        if(check)
+            locations.push_back(row[index]);
     }
     for(int index = 0; index < 8; index++){
         if(index == piece.location.row)
@@ -359,11 +359,12 @@ vector<Location> State::direct_course_rook(Piece piece) {
             locations.push_back(column[index]);
             continue;
         }
-        bool check;
+        bool check=true;
         for (Location loc:column) { //check if there other pieces on the
-            if (!board[loc.row][loc.column].is_empty()) //column between the locations
-                check=false;
+            if (!board[loc.row][loc.column].is_empty()) { //column between the locations
+                check = false;
                 break;
+            }
         }
         if(check)
             locations.push_back(column[index]);
@@ -453,7 +454,7 @@ vector<Location> State::direct_course_bishop(Piece piece) {
             continue;
 
         vector<Location> diagonal = get_diagonal(location, piece.location);
-        if (diagonal.size() == 0) {
+        if (diagonal.empty()) {
             locations.push_back(location);
             continue;
         }
@@ -587,16 +588,15 @@ Move_Type State::move_type(Piece piece, Location to){
         if (to.column != piece.location.column) {
             if (board[to.row][to.column].is_empty())
                 return EN_PASSANT;
-            else if(to.row==0||to.row==7)
+            if(to.row==0||to.row==7)
                 return PROMOTION_AND_CAPTURE;
-            else
-                return CAPTURE;
+            return CAPTURE;
+
         }
-        else if(to.row==0||to.row==7){
+        if(to.row==0||to.row==7){
             return PROMOTION;
         }
-        else
-            return REGULAR;
+        return REGULAR;
     }
 
     if(piece.type==KING){
@@ -726,11 +726,11 @@ void State::setEn_passant_location(const Location &en_passant_location) {
     State::en_passant_location = en_passant_location;
 }
 
-Square State::getSqaure (Location location) const{
+Square State::getSquare (Location location) const{
     return board[location.row][location.column];
 }
 
-State State::operator=(State state) {
+State& State::operator=(State state) {
     turn =state.turn;
     white_pieces = state.white_pieces;
     black_pieces = state.black_pieces;

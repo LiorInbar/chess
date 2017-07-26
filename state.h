@@ -29,10 +29,11 @@ class State {
 public:
     State(vector<vector<Square>> new_board, Color new_turn, vector<Piece> new_white_pieces,
           vector<Piece> new_black_pieces);
-
+    ~State()= default;
     State(const State& original_state);
-
-    Square getSqaure (Location location) const;
+    State(State&& state) noexcept = default;
+    State& operator=(State&& state)= default;
+    Square getSquare (Location location) const;
 
     Color getTurn() const;
 
@@ -54,7 +55,7 @@ public:
 
     void setEn_passant_location(const Location &en_passant_location);
 
-    State operator=(State state);
+    State& operator=(State state);
 
     vector<Location> direct_course_pawn(Piece piece);
 
