@@ -21,15 +21,24 @@ typedef enum column {A, B, C, D, E, F, G, H} Column;
 struct Location{
     int row;
     int column;
-    Location(){};
+    Location()= default;
+   ~Location()= default;
     Location(int new_row ,int new_column): row(new_row),column(new_column){
     }
-    Location(const Location&) = default;
+    Location(const Location& location) = default;
+    Location(Location&& location) noexcept :row(location.row), column(location.column){} ;
+
     bool operator==(Location location){
         return row == location.row &&
                column == location.column;
     }
     Location& operator=(const Location& location)= default;
+    Location& operator= (Location&& location) noexcept{
+        row = location.row;
+        column = location.column;
+        return  *this;
+    }
+
 
 };
 
@@ -39,12 +48,8 @@ struct Piece {
     Color color;
     Location location;
     int moves_counter = 0;
-
-    Piece(piece_type type, Color color, const Location &location)
+    Piece(piece_type type, Color color, const Location location)
             : type(type), color(color), location(location) {}
-
-
-
 };
 
 
