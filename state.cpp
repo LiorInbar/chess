@@ -304,14 +304,17 @@ vector<Location> one_squares_distance(Location location){
 }
 
 vector<Location> State::direct_course_knight(Piece piece){
+    print_location(piece.location);
     vector<Location> locations;
     vector<Location> potential_locations = two_squares_distance(piece.location);
-
     for(Location loc:potential_locations) {
+       // print_location(loc);
         if (is_knight_move(piece.location,loc) &&
-            !(player_piece_on_location(loc, piece.color)))
+                (!player_piece_on_location(loc, piece.color))) {
             locations.push_back(loc);
+            print_location(loc);
 
+        }
     }
 
 
@@ -321,9 +324,9 @@ vector<Location> State::direct_course_knight(Piece piece){
 
 bool State::player_piece_on_location(Location location, Color player){
     if(board[location.row][location.column].is_empty())
-        return true;
+        return false;
 
-    return !(board[location.row][location.column].piece->color == player);
+    return board[location.row][location.column].piece->color == player;
 }
 
 vector<Location> State::direct_course_rook(Piece piece) {
@@ -558,7 +561,7 @@ vector<Location> State::available_locations(Piece piece) {
 
 vector<Location> State::direct_course(Piece piece) {
     vector<Location> locations;
- //   cout<<piece_type_to_string(piece.type)<<endl;
+   cout<<piece_type_to_string(piece.type)<<endl;
     switch(piece.type) {
         case PAWN:
             locations = direct_course_pawn(piece);
