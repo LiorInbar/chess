@@ -83,12 +83,12 @@ void initial_state() {
     print_board(state);
     cout<<"-----------------"<<endl;
     Piece* pawny = state.getSquare(Location(1,A)).piece;
-    state.make_move(*pawny,Location(3,A));
+    state.make_move(pawny,Location(3,A));
     print_board(state);
     cout<<"-----------------"<<endl;
 
     Piece* knighty = state.getSquare(Location(7,B)).piece;
-    state.make_move(*knighty,Location(5,A));
+    state.make_move(knighty,Location(5,A));
     print_board(state);
     cout<<"-----------------"<<endl;
     for(Location loc:state.available_locations(*pawny)){
@@ -101,17 +101,20 @@ void initial_state() {
     for(Location loc:state.available_locations(*rooky)){
         print_location(loc);
     }
+    state.make_move(state.getSquare(Location(3,A)).piece,Location(4,A));
+   /* for(Location loc:state.available_locations(*pawny)){
+          print_location(loc);
+      }*/
 
 }
 
 
-
-
+};
 
 
 
 int main() {
-    initial_state();
+  initial_state();
 
 
     return 0;

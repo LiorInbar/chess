@@ -100,7 +100,7 @@ public:
 
     vector<Location> available_locations(Piece piece);
 
-    void make_move(Piece piece, Location to);
+    void make_move(Piece* piece, Location to);
 
 
     void add_piece(piece_type type, Location location);
@@ -108,6 +108,8 @@ public:
     void king_side_castling();
 
     void queen_side_castling();
+
+    void pieces_pointers_update();
 };
 
 
