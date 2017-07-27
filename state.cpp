@@ -3,39 +3,34 @@
 //
 
 #include "state.h"
-#include <cmath>
 #include <iostream>
-#include <utility>
 
 
 State::State(vector<vector<Square>> new_board, Color new_turn, vector<Piece> new_white_pieces,
              vector<Piece> new_black_pieces):
-        turn(new_turn),white_pieces(std::move(new_white_pieces)),
-        black_pieces(std::move(new_black_pieces)),
+        turn(new_turn),white_pieces(new_white_pieces),
+        black_pieces(new_black_pieces),
         en_passant_location(Location(0,0)){
     for (int index = 0; index < 8; index++){
         board.emplace_back(vector<Square>());
         for (int index2 = 0; index2 < 8; index2++){
-            board[index].push_back(new_board[index][index2]);
+            board[index].push_back(Square(index,index2));
         }
+    }
+    for (int index = 0; index < white_pieces.size(); index++) {
+        board[white_pieces[index].location.row][white_pieces[index].location.column].piece = &(white_pieces[index]);
+    }
+    for (int index = 0; index < black_pieces.size(); index++) {
+        board[black_pieces[index].location.row][black_pieces[index].location.column].piece = &(black_pieces[index]);
     }
 }
 
-State::State(const State& original_state) : turn(original_state.turn),
-                                            white_pieces(original_state.white_pieces),
-                                            black_pieces(original_state.black_pieces),
-                                            en_passant_location(original_state.en_passant_location),
-                                            en_passant_flag(original_state.en_passant_flag){
-
-    for (int index = 0; index < 8; index++){
-        board.emplace_back(vector<Square>());
-        for (int index2 = 0; index2 < 8; index2++){
-            board[index].push_back(original_state.board[index][index2]);
-        }
-    }
-    cout<<"here"<<endl;
-    pieces_pointers_update();
+State::State(const State& original_state):   State(original_state.board, original_state.turn, original_state.white_pieces,
+original_state.black_pieces) {
+    en_passant_flag=original_state.en_passant_flag;
+    en_passant_location=original_state.en_passant_location;
 }
+
 
 Location State::king_location(Color player) { //nothing to explain
     vector<Piece> pieces = player == WHITE ?
@@ -228,6 +223,7 @@ void State::remove_piece_in_location(Location location){
 }
 
 void State::move_piece(Location from, Location to){
+
     board[from.row][from.column].piece->location = to;
     board[to.row][to.column].piece = board[from.row][from.column].piece;
     board[from.row][from.column].piece = nullptr;
@@ -468,8 +464,8 @@ vector<Location> State::direct_course_bishop(Piece piece) {
  * capture) from the location of the piece to the target location and the player's king isn't under threat as
  * a result of the move. */
 vector<Location> State::available_locations(Piece piece) {
-    vector<Location> locations = direct_course(piece);
 
+    vector<Location> locations = direct_course(piece);
     //check possile en passant
     if(piece.type==PAWN) {
         if (piece.color == WHITE) {
@@ -503,6 +499,7 @@ vector<Location> State::available_locations(Piece piece) {
                 locations.emplace_back(Location(piece.location.row - 1, piece.location.column + 1));
         }
     }
+
     else if(piece.type==KING){
 
         if(piece.color == WHITE){
@@ -530,18 +527,20 @@ vector<Location> State::available_locations(Piece piece) {
             new_state.capture_piece(piece.location,loc);
         else
             new_state.move_piece(piece.location,loc);
+
         new_state.turn = turn == WHITE ?
                          BLACK : WHITE;
         if(!(new_state.is_in_check(turn)))
             final_locations.push_back(loc);
     }
+
     return final_locations;
 }
 
 
 vector<Location> State::direct_course(Piece piece) {
     vector<Location> locations;
-   cout<<piece_type_to_string(piece.type)<<endl;
+  // cout<<piece_type_to_string(piece.type)<<endl;
     switch(piece.type) {
         case PAWN:
             locations = direct_course_pawn(piece);
@@ -637,42 +636,41 @@ void State::queen_side_castling(){
     move_piece(Location(row,E),Location(row,C));
 }
 
-void State::pieces_pointers_update(){
-    for(int index=0;index<white_pieces.size();index++){
-        board[white_pieces[index].location.row][white_pieces[index].location.column].piece = &(white_pieces[index]);
-    }
-    for(int index=0;index<black_pieces.size();index++){
-        board[black_pieces[index].location.row][black_pieces[index].location.column].piece = &(black_pieces[index]);
-    }
-}
 
 void State::make_move(Piece* piece, Location to){
+
     piece->moves_counter++;
     en_passant_flag = false;
     switch(move_type(*piece,to)){
         case EN_PASSANT:
             capture_piece_en_passant(piece->location,to);
+            break;
         case CAPTURE:
             capture_piece(piece->location,to);
+            break;
         case PROMOTION:
             move_piece(piece->location,to);
             promotion(to);
+            break;
         case PROMOTION_AND_CAPTURE:
             capture_piece(piece->location,to);
             promotion(to);
+            break;
         case KINGSIDE_CASTLING:
              king_side_castling();
+            break;
         case QUEENSIDE_CASTLING:
             queen_side_castling();
+            break;
         case REGULAR:
             if(piece->type==PAWN && abs(piece->location.row-to.row)==2){
                 en_passant_flag = true;
                 en_passant_location = Location((piece->location.row+to.row)/2,to.column);
             }
+
             move_piece(piece->location,to);
     }
     turn = turn == WHITE ? BLACK : WHITE;
-
 }
 
 Color State::getTurn() const {
@@ -733,6 +731,17 @@ State& State::operator=(State state) {
     return *this;
 }
 
-
+void print_board(const State& state) {
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if(!state.getSquare(Location(i,j)).is_empty())
+                cout<<"("+color_to_string(state.getSquare(Location(i,j)).piece->color)+","
+                      +piece_type_to_string(state.getSquare(Location(i,j)).piece->type)+")"+" ";
+            else
+                cout<<"empty ";
+        }
+        cout<<endl;
+    }
+}
 
 

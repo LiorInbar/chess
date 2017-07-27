@@ -3,18 +3,7 @@
 #include "state.h"
 
 
-void print_board(const State& state) {
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            if(!state.getSquare(Location(i,j)).is_empty())
-                cout<<"("+color_to_string(state.getSquare(Location(i,j)).piece->color)+","
-                      +piece_type_to_string(state.getSquare(Location(i,j)).piece->type)+")"+" ";
-            else
-                cout<<"empty ";
-        }
-        cout<<endl;
-    }
-}
+
 
 
 void initial_state() {
@@ -86,15 +75,18 @@ void initial_state() {
     state.make_move(pawny,Location(3,A));
     print_board(state);
     cout<<"-----------------"<<endl;
-
     Piece* knighty = state.getSquare(Location(7,B)).piece;
     state.make_move(knighty,Location(5,A));
     print_board(state);
     cout<<"-----------------"<<endl;
-    for(Location loc:state.available_locations(*pawny)){
+
+    print_location(state.getSquare(Location(3,A)).piece->location);
+    for(Location loc:state.available_locations(*(state.getSquare(Location(3,A)).piece))){
        print_location(loc);
     }
-    for(Location loc:state.available_locations(*knighty)){
+    print_location(state.getSquare(Location(3,A)).piece->location);
+
+    for(Location loc:state.available_locations(*state.getSquare(Location(5,A)).piece)){
         print_location(loc);
     }
     Piece* rooky = state.getSquare(Location(0,A)).piece;
@@ -102,14 +94,13 @@ void initial_state() {
         print_location(loc);
     }
     state.make_move(state.getSquare(Location(3,A)).piece,Location(4,A));
-   /* for(Location loc:state.available_locations(*pawny)){
+    for(Location loc:state.available_locations(*state.getSquare(Location(7,A)).piece)){
           print_location(loc);
-      }*/
+      }
 
 }
 
 
-};
 
 
 

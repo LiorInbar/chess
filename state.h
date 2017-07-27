@@ -109,9 +109,8 @@ public:
 
     void queen_side_castling();
 
-    void pieces_pointers_update();
 };
 
-
+void print_board(const State& state);
 
 #endif //CHESS_STATE_H
