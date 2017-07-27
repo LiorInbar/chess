@@ -97,6 +97,10 @@ void initial_state() {
     for(Location loc:state.available_locations(*knighty)){
         print_location(loc);
     }
+    Piece* rooky = state.getSquare(Location(0,A)).piece;
+    for(Location loc:state.available_locations(*rooky)){
+        print_location(loc);
+    }
 
 }
 

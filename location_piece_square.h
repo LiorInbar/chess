@@ -43,6 +43,7 @@ struct Piece {
     int moves_counter = 0;
     Piece(piece_type type, Color color, const Location location)
             : type(type), color(color), location(location) {}
+            
 };
 
 

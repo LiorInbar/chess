@@ -51,15 +51,16 @@ vector<Location> get_row(Location l1, Location l2){
     vector<Location> row_vector;
     Direction d = l1.column > l2.column ? LEFT : RIGHT;
     if(d == LEFT) {
-        for (int index = l1.column-1; index >= l2.column; index--){
-            row_vector.emplace_back(Location(l1.row,index));
+        for (int column = l1.column-1; column >= l2.column; column--){
+            row_vector.emplace_back(Location(l1.row,column));
         }
     }
     else{
-        for (int index = l1.column+1; index <= l2.column; index++){
-            row_vector.emplace_back(Location(l1.row,index));
+        for (int column = l1.column+1; column <= l2.column; column++){
+            row_vector.emplace_back(Location(l1.row,column));
         }
     }
+    cout<<"im here"<<endl;
     return row_vector;
 }
 
@@ -304,15 +305,12 @@ vector<Location> one_squares_distance(Location location){
 }
 
 vector<Location> State::direct_course_knight(Piece piece){
-    print_location(piece.location);
     vector<Location> locations;
     vector<Location> potential_locations = two_squares_distance(piece.location);
     for(Location loc:potential_locations) {
-       // print_location(loc);
         if (is_knight_move(piece.location,loc) &&
                 (!player_piece_on_location(loc, piece.color))) {
             locations.push_back(loc);
-            print_location(loc);
 
         }
     }
@@ -331,14 +329,14 @@ bool State::player_piece_on_location(Location location, Color player){
 
 vector<Location> State::direct_course_rook(Piece piece) {
     vector<Location> locations;
-    for(int index = 0; index < 8; index++){
-        if(index == piece.location.column)
+    for(int column = 0; column < 8; column++){
+        if(column == piece.location.column)
             continue;
-        if(player_piece_on_location(Location(piece.location.row, index), piece.color))
+        if(player_piece_on_location(Location(piece.location.row, column), piece.color))
             continue;
-        vector<Location> row = get_row(piece.location, Location(piece.location.row, index));
+        vector<Location> row = get_row(piece.location, Location(piece.location.row, column));
         if (row.size() == 1) {
-            locations.push_back(row[index]);
+            locations.push_back(Location(piece.location.row,column));
             continue;
         }
         bool check=true;
@@ -349,17 +347,17 @@ vector<Location> State::direct_course_rook(Piece piece) {
             }
         }
         if(check)
-            locations.push_back(row[index]);
+            locations.push_back(Location(piece.location.row,column));
     }
-    for(int index = 0; index < 8; index++){
-        if(index == piece.location.row)
+    for(int row = 0; row < 8; row++){
+        if(row == piece.location.row)
             continue;
-        if(player_piece_on_location(Location(index,piece.location.column), piece.color))
+        if(player_piece_on_location(Location(row,piece.location.column), piece.color))
             continue;
 
-        vector<Location> column = get_column(piece.location, Location(index,piece.location.column));
+        vector<Location> column = get_column(piece.location, Location(row,piece.location.column));
         if (column.size() == 1) {
-            locations.push_back(column[index]);
+            locations.push_back(Location(row,piece.location.column));
             continue;
         }
         bool check=true;
@@ -370,7 +368,7 @@ vector<Location> State::direct_course_rook(Piece piece) {
             }
         }
         if(check)
-            locations.push_back(column[index]);
+            locations.push_back(Location(row,piece.location.column));
     }
 
     return locations;
