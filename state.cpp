@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-State::State(vector<vector<Square>> new_board, Color new_turn, vector<Piece> new_white_pieces,
+State::State(Color new_turn, vector<Piece> new_white_pieces,
              vector<Piece> new_black_pieces):
         turn(new_turn),white_pieces(new_white_pieces),
         black_pieces(new_black_pieces),
@@ -25,7 +25,7 @@ State::State(vector<vector<Square>> new_board, Color new_turn, vector<Piece> new
     }
 }
 
-State::State(const State& original_state):   State(original_state.board, original_state.turn, original_state.white_pieces,
+State::State(const State& original_state):   State(original_state.turn, original_state.white_pieces,
 original_state.black_pieces) {
     en_passant_flag=original_state.en_passant_flag;
     en_passant_location=original_state.en_passant_location;
@@ -94,13 +94,13 @@ vector<Location> get_diagonal(Location l1, Location l2){
 
     else if(d1 == LEFT && d2 == UP) {
         for (int row_index = l1.row+1, column_index = l1.column-1;
-             row_index > l2.row; row_index++, column_index--){
+             row_index < l2.row; row_index++, column_index--){
             diagonal_vector.emplace_back(Location(row_index,column_index));
         }
     }
     else if(d1 == RIGHT && d2 == DOWN) {
         for (int row_index = l1.row-1, column_index = l1.column+1;
-             row_index < l2.row; row_index--, column_index++){
+             row_index > l2.row; row_index--, column_index++){
             diagonal_vector.emplace_back(Location(row_index,column_index));
         }
     }
@@ -431,21 +431,21 @@ vector<Location> State::direct_course_pawn(Piece piece) {
 }
 
 vector<Location> State::direct_course_bishop(Piece piece) {
+
     vector<Location> locations;
     vector<Location> diagonals = get_diagonals(piece.location);
-
     for(Location location:diagonals) {
         if(player_piece_on_location(location,piece.color))
             continue;
 
-        vector<Location> diagonal = get_diagonal(location, piece.location);
-        if (diagonal.empty()) {
+        vector<Location> current_diagonal = get_diagonal(location, piece.location);
+        if (current_diagonal.empty()) {
             locations.push_back(location);
             continue;
         }
 
         bool check=true;
-        for (Location loc:diagonals) { //check if there other pieces on the
+        for (Location loc:current_diagonal) { //check if there other pieces on the
             if (!(board[loc.row][loc.column].is_empty())) { //diagonal between the locations
                 check = false;
                 break;
@@ -453,7 +453,6 @@ vector<Location> State::direct_course_bishop(Piece piece) {
         }
         if(check)
             locations.push_back(location);
-
     }
 
     return locations;

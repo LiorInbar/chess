@@ -53,22 +53,7 @@ void initial_state() {
         black_pieces.emplace_back(Piece(PAWN, BLACK, Location(6, c)));
     }
 
-    vector<vector <Square>> board;
-    for (int i = 0; i < 8; i++) {
-        board.emplace_back(vector <Square>());
-        for (int j = A; j <= H; j++) {
-            Square square(i,j);
-            board[i].push_back(square);
-        }
-    }
-
-    for (int i = 0; i < white_pieces.size(); i++) {
-        board[white_pieces[i].location.row][white_pieces[i].location.column].piece = &white_pieces[i];
-    }
-    for (int i = 0; i < black_pieces.size(); i++) {
-        board[black_pieces[i].location.row][black_pieces[i].location.column].piece = &black_pieces[i];
-    }
-    State state(board, WHITE, white_pieces, black_pieces);
+    State state(WHITE, white_pieces, black_pieces);
     print_board(state);
     cout<<"-----------------"<<endl;
     Piece* pawny = state.getSquare(Location(1,A)).piece;
@@ -97,7 +82,18 @@ void initial_state() {
     for(Location loc:state.available_locations(*state.getSquare(Location(7,A)).piece)){
           print_location(loc);
       }
-
+    state.make_move(state.getSquare(Location(6,E)).piece,Location(4,E));
+    print_board(state);
+    for(Location loc:state.available_locations(*state.getSquare(Location(1,E)).piece)){
+        print_location(loc);
+    }
+    cout<<"-----------------"<<endl;
+    state.make_move(state.getSquare(Location(0,G)).piece,Location(2,F));
+    print_board(state);
+    for(Location loc:state.available_locations(*state.getSquare(Location(7,F)).piece)){
+        print_location(loc);
+    }
+    cout<<"-----------------"<<endl;
 }
 
 

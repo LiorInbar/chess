@@ -27,7 +27,7 @@ class State {
     void move_piece(Location from, Location to);
 
 public:
-    State(vector<vector<Square>> new_board, Color new_turn, vector<Piece> new_white_pieces,
+    State(Color new_turn, vector<Piece> new_white_pieces,
           vector<Piece> new_black_pieces);
     ~State()= default;
     State(const State& original_state);
