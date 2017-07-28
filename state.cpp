@@ -17,12 +17,7 @@ State::State(Color new_turn, vector<Piece> new_white_pieces,
             board[index].push_back(Square(index,index2));
         }
     }
-    for (int index = 0; index < white_pieces.size(); index++) {
-        board[white_pieces[index].location.row][white_pieces[index].location.column].piece = &(white_pieces[index]);
-    }
-    for (int index = 0; index < black_pieces.size(); index++) {
-        board[black_pieces[index].location.row][black_pieces[index].location.column].piece = &(black_pieces[index]);
-    }
+    update_squares();
 }
 
 State::State(const State& original_state):   State(original_state.turn, original_state.white_pieces,
@@ -743,6 +738,15 @@ bool State::is_mate() {
 
 bool State::is_stale_mate() {
     return !(is_in_check(turn)) && available_moves_for_current_player() == 0;
+}
+
+void State::update_squares() {
+    for (int index = 0; index < white_pieces.size(); index++) {
+        board[white_pieces[index].location.row][white_pieces[index].location.column].piece = &(white_pieces[index]);
+    }
+    for (int index = 0; index < black_pieces.size(); index++) {
+        board[black_pieces[index].location.row][black_pieces[index].location.column].piece = &(black_pieces[index]);
+    }
 }
 
 void print_board(const State& state) {

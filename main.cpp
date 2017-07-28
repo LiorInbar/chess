@@ -6,7 +6,7 @@
 
 
 
-void initial_state() {
+void test() {
     vector<Piece> white_pieces;
     Piece white_king(KING, WHITE, Location(0, E)),
             white_queen(QUEEN, WHITE, Location(0, D)),
@@ -101,7 +101,19 @@ void initial_state() {
 
 
 int main() {
-  initial_state();
+
+    test();
+    vector<int> v;
+    vector<int> vv;
+    v.push_back(9);
+    vv=v;
+    int y;
+    int j;
+    vv.push_back(8);
+    cout<<v.size()<<endl;
+
+
+
 
 
     return 0;

@@ -25,8 +25,8 @@ class State {
     void capture_piece(Location from, Location to);
     void capture_piece_en_passant(Location from, Location to);
     void move_piece(Location from, Location to);
-
 public:
+    State()= default;
     State(Color new_turn, vector<Piece> new_white_pieces,
           vector<Piece> new_black_pieces);
     ~State()= default;
@@ -36,9 +36,9 @@ public:
     Square getSquare (Location location) const;
 
     Color getTurn() const;
+    void update_squares();
 
     void setTurn(Color turn);
-
     const vector<Piece> &getWhite_pieces() const;
 
     void setWhite_pieces(const vector<Piece> &white_pieces);

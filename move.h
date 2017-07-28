@@ -28,6 +28,7 @@ public:
                                          from(f), to(t),
                                          moved_piece_type(mpt),
                                          moveType(mt){}
+    Move(const Move& original_move) = default;
 
 };
 
