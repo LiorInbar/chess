@@ -729,6 +729,21 @@ State& State::operator=(State state) {
     }
     return *this;
 }
+int State::available_moves_for_current_player(){
+    vector<Piece> pieces = turn == WHITE ? white_pieces : black_pieces;
+    int total_moves = 0;
+    for(Piece piece:pieces){
+        total_moves += available_locations(piece).size();
+    }
+    return total_moves;
+}
+bool State::is_mate() {
+    return is_in_check(turn) && available_moves_for_current_player() == 0;
+}
+
+bool State::is_stale_mate() {
+    return !(is_in_check(turn)) && available_moves_for_current_player() == 0;
+}
 
 void print_board(const State& state) {
     for (int i = 0; i < 8; i++) {

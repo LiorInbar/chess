@@ -74,7 +74,7 @@ public:
     vector<Location> direct_course(Piece piece);
 
     void promotion(Location location);
-
+    int available_moves_for_current_player();
 
 public:
 
@@ -85,6 +85,8 @@ public:
     /*check if player is in check position (against him)*/
     bool is_in_check(Color player);
 
+    bool is_mate();
+    bool is_stale_mate();
 
     /*  check if location is in a direct threat from a piece of threatening_player
      * location is threatened by a player if one of the player's pieces threatening it.
