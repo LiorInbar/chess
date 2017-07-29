@@ -41,21 +41,24 @@ struct Piece {
     Color color;
     Location location;
     int moves_counter = 0;
+    Piece()= default;
     Piece(piece_type type, Color color, const Location location)
             : type(type), color(color), location(location) {}
-            
+    Piece& operator=(const Piece& piece) = default;
+
+
 };
 
 
 
 struct Square {
     Location location;
-    Color color = EMPTY;
-    int piece_id;
+    Piece piece;
+    bool empty = true;
     Square():location(Location()){};
     Square(int row, int column):location(row,column){}
     bool is_empty(){
-        return color == EMPTY;
+        return empty;
     }
 };
 
