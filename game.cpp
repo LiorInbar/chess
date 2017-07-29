@@ -28,6 +28,9 @@ State initial_state(){
     for (int c = 0; c <= 7; c++) {
         white_pieces.emplace_back(Piece(PAWN, WHITE, Location(1, c)));
     }
+    for (int index = 0; index < white_pieces.size(); index++) {
+        white_pieces[index].id=index;
+    }
 
     vector<Piece> black_pieces;
     Piece black_king(KING, BLACK, Location(7, E)),
@@ -50,6 +53,9 @@ State initial_state(){
 
     for (int c = A; c <= H; c++) {
         black_pieces.emplace_back(Piece(PAWN, BLACK, Location(6, c)));
+    }
+    for (int index = 0; index < black_pieces.size(); index++) {
+        black_pieces[index].id=index;
     }
     return State(WHITE, white_pieces, black_pieces);
 

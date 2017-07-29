@@ -103,6 +103,74 @@ void test() {
         print_location(loc);
     }
     cout<<"-----------------"<<endl;
+
+    state.make_move(state.getBlack_pieces()[state.getSquare(Location(7,F)).piece.id],Location(3,B));
+    print_board(state);
+    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(1,D)).piece.id])){
+        print_location(loc);
+    }
+    cout<<"-----------------"<<endl;
+    state.make_move(state.getWhite_pieces()[state.getSquare(Location(1,E)).piece.id],Location(3,E));
+    print_board(state);
+    for(Location loc:state.available_locations(state.getBlack_pieces()[state.getSquare(Location(3,B)).piece.id])){
+        print_location(loc);
+    }
+    cout<<"-----------------"<<endl;
+    state.make_move(state.getBlack_pieces()[state.getSquare(Location(6,B)).piece.id],Location(4,B));
+    print_board(state);
+    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(4,A)).piece.id])){
+        print_location(loc);
+    }
+    cout<<"-----------------"<<endl;
+    state.make_move(state.getWhite_pieces()[state.getSquare(Location(2,F)).piece.id],Location(4,E));
+    print_board(state);
+    for(Location loc:state.available_locations(state.getBlack_pieces()[state.getSquare(Location(7,D)).piece.id])){
+        print_location(loc);
+    }
+    cout<<"-----------------"<<endl;
+    state.make_move(state.getBlack_pieces()[state.getSquare(Location(7,G)).piece.id],Location(5,H));
+    print_board(state);
+    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(4,A)).piece.id])){
+        print_location(loc);
+    }
+    cout<<"-----------------"<<endl;
+    state.make_move(state.getWhite_pieces()[state.getSquare(Location(0,F)).piece.id],Location(3,C));
+    print_board(state);
+    for(Location loc:state.available_locations(state.getBlack_pieces()[state.getSquare(Location(7,E)).piece.id])){
+        print_location(loc);
+    }
+    cout<<"-----------------"<<endl;
+    state.make_move(state.getBlack_pieces()[state.getSquare(Location(7,E)).piece.id],Location(7,G));
+    print_board(state);
+    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(0,E)).piece.id])){
+        print_location(loc);
+    }
+    cout<<"-----------------"<<endl;
+    state.make_move(state.getWhite_pieces()[state.getSquare(Location(0,E)).piece.id],Location(1,E));
+    print_board(state);
+    for(Location loc:state.available_locations(state.getBlack_pieces()[state.getSquare(Location(7,C)).piece.id])){
+        print_location(loc);
+    }
+    cout<<"-----------------"<<endl;
+    state.make_move(state.getBlack_pieces()[state.getSquare(Location(7,D)).piece.id],Location(4,G));
+    print_board(state);
+    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(1,E)).piece.id])){
+        print_location(loc);
+    }
+    cout<<"-----------------"<<endl;
+    state.make_move(state.getWhite_pieces()[state.getSquare(Location(1,D)).piece.id],Location(3,D));
+    print_board(state);
+    for(Location loc:state.available_locations(state.getBlack_pieces()[state.getSquare(Location(3,B)).piece.id])){
+        print_location(loc);
+    }
+    cout<<"-----------------"<<endl;
+    state.make_move(state.getBlack_pieces()[state.getSquare(Location(4,G)).piece.id],Location(2,E));
+    print_board(state);
+    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(3,C)).piece.id])){
+        print_location(loc);
+    }
+    cout<<state.available_moves_for_current_player()<<endl;
+
 }
 
 
@@ -112,18 +180,6 @@ void test() {
 int main() {
 
     test();
-    vector<int> v;
-    vector<int> vv;
-    v.push_back(9);
-    vv=v;
-    int y;
-    int j;
-    vv.push_back(8);
-    cout<<v.size()<<endl;
-
-
-
-
 
     return 0;
 }
