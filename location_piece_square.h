@@ -15,7 +15,7 @@
 #include <vector>
 using namespace std;
 typedef enum{PAWN,BISHOP,KNIGHT,ROOK,QUEEN,KING} piece_type;
-typedef enum {WHITE, BLACK} Color;
+typedef enum {EMPTY, WHITE, BLACK} Color;
 typedef enum column {A, B, C, D, E, F, G, H} Column;
 
 struct Location{
@@ -36,7 +36,7 @@ struct Location{
 };
 
 struct Piece {
-
+    int id;
     piece_type type;
     Color color;
     Location location;
@@ -50,11 +50,12 @@ struct Piece {
 
 struct Square {
     Location location;
-    Piece* piece = nullptr;
+    Color color = EMPTY;
+    int piece_id;
     Square():location(Location()){};
     Square(int row, int column):location(row,column){}
     bool is_empty(){
-        return piece == nullptr;
+        return color == EMPTY;
     }
 };
 

@@ -29,6 +29,9 @@ void test() {
     for (int c = 0; c <= 7; c++) {
         white_pieces.emplace_back(Piece(PAWN, WHITE, Location(1, c)));
     }
+    for (int index = 0; index < white_pieces.size(); index++) {
+        white_pieces[index].id=index;
+    }
 
     vector<Piece> black_pieces;
     Piece black_king(KING, BLACK, Location(7, E)),
@@ -53,44 +56,50 @@ void test() {
         black_pieces.emplace_back(Piece(PAWN, BLACK, Location(6, c)));
     }
 
+    for (int index = 0; index < black_pieces.size(); index++) {
+        black_pieces[index].id=index;
+
+    }
+
+
     State state(WHITE, white_pieces, black_pieces);
+
     print_board(state);
     cout<<"-----------------"<<endl;
-    Piece* pawny = state.getSquare(Location(1,A)).piece;
+    Piece pawny = state.getWhite_pieces()[state.getSquare(Location(1,A)).piece_id];
     state.make_move(pawny,Location(3,A));
     print_board(state);
     cout<<"-----------------"<<endl;
-    Piece* knighty = state.getSquare(Location(7,B)).piece;
+    Piece knighty = state.getBlack_pieces()[state.getSquare(Location(7,B)).piece_id];
     state.make_move(knighty,Location(5,A));
     print_board(state);
     cout<<"-----------------"<<endl;
 
-    print_location(state.getSquare(Location(3,A)).piece->location);
-    for(Location loc:state.available_locations(*(state.getSquare(Location(3,A)).piece))){
+
+    print_location(state.getWhite_pieces()[8].location);
+
+    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(3,A)).piece_id])){
        print_location(loc);
     }
-    print_location(state.getSquare(Location(3,A)).piece->location);
+    cout<<state.getSquare(Location(3,A)).piece_id<<endl;
 
-    for(Location loc:state.available_locations(*state.getSquare(Location(5,A)).piece)){
+    Piece rooky = state.getWhite_pieces()[state.getSquare(Location(0,A)).piece_id];
+    for(Location loc:state.available_locations(rooky)){
         print_location(loc);
     }
-    Piece* rooky = state.getSquare(Location(0,A)).piece;
-    for(Location loc:state.available_locations(*rooky)){
-        print_location(loc);
-    }
-    state.make_move(state.getSquare(Location(3,A)).piece,Location(4,A));
-    for(Location loc:state.available_locations(*state.getSquare(Location(7,A)).piece)){
+    state.make_move(state.getWhite_pieces()[state.getSquare(Location(3,A)).piece_id],Location(4,A));
+    for(Location loc:state.available_locations(state.getBlack_pieces()[state.getSquare(Location(7,A)).piece_id])){
           print_location(loc);
       }
-    state.make_move(state.getSquare(Location(6,E)).piece,Location(4,E));
+    state.make_move(state.getBlack_pieces()[state.getSquare(Location(6,E)).piece_id],Location(4,E));
     print_board(state);
-    for(Location loc:state.available_locations(*state.getSquare(Location(1,E)).piece)){
+    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(1,E)).piece_id])){
         print_location(loc);
     }
     cout<<"-----------------"<<endl;
-    state.make_move(state.getSquare(Location(0,G)).piece,Location(2,F));
+    state.make_move(state.getWhite_pieces()[state.getSquare(Location(0,G)).piece_id],Location(2,F));
     print_board(state);
-    for(Location loc:state.available_locations(*state.getSquare(Location(7,F)).piece)){
+    for(Location loc:state.available_locations(state.getBlack_pieces()[state.getSquare(Location(7,F)).piece_id])){
         print_location(loc);
     }
     cout<<"-----------------"<<endl;

@@ -7,7 +7,7 @@
 #include "location_piece_square.h"
 
 string color_to_string(Color color){
-    return color==WHITE ? "white" : color == BLACK ? "black" : "error";
+    return color==WHITE ? "white" : color == BLACK ? "black" : color == EMPTY ? "empty" : "error";
 }
 
 string piece_type_to_string(piece_type type){
