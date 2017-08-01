@@ -24,7 +24,23 @@ public:
 
     Game(const Game& game)= default;
     Color Turn();
+    void move(Piece piece, Location location);
 
+    const vector<Move> &getWhite_moves() const;
+
+    void setWhite_moves(const vector<Move> &white_moves);
+
+    const vector<Move> &getBlack_moves() const;
+
+    void setBlack_moves(const vector<Move> &black_moves);
+
+    const State &getCurrent_state() const;
+
+    void setCurrent_state(const State &current_state);
+
+    Result getResult() const;
+
+    void setResult(Result result);
 
 };
 

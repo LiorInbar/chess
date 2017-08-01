@@ -68,9 +68,54 @@ Color Game::Turn() {
 
 Game::Game(const State &current_state) : current_state(current_state) {}
 
-Game::Game(){
-    State state=initial_state();
-    current_state=state;
-    current_state.update_squares();
+Game::Game():current_state(initial_state()){
+  //  State state=initial_state();
+
+}
+
+void Game::move(Piece piece, Location location) {
+    State new_state(current_state);
+    new_state.make_move(piece, location);
+    vector<Move>& moves = Turn() == WHITE ? white_moves : black_moves;
+    moves.push_back(Move(current_state,new_state,piece.location,location,piece.type,current_state.move_type(piece,location)));
+    current_state = new_state;
+    if(current_state.is_mate()){
+        result=Turn()==WHITE ? BLACK_WIN : WHITE_WIN;
+    }
+    if(current_state.is_stale_mate()){
+        result=DRAW;
+    }
+}
+
+const vector<Move> &Game::getWhite_moves() const {
+    return white_moves;
+}
+
+void Game::setWhite_moves(const vector<Move> &white_moves) {
+    Game::white_moves = white_moves;
+}
+
+const vector<Move> &Game::getBlack_moves() const {
+    return black_moves;
+}
+
+void Game::setBlack_moves(const vector<Move> &black_moves) {
+    Game::black_moves = black_moves;
+}
+
+const State &Game::getCurrent_state() const {
+    return current_state;
+}
+
+void Game::setCurrent_state(const State &current_state) {
+    Game::current_state = current_state;
+}
+
+Result Game::getResult() const {
+    return result;
+}
+
+void Game::setResult(Result result) {
+    Game::result = result;
 }
 

@@ -1,6 +1,6 @@
 #include <iostream>
 //#include "move.h"
-#include "state.h"
+#include "game.h"
 
 
 
@@ -176,10 +176,9 @@ void test() {
 
 
 
-
 int main() {
-
-    test();
+Game game;
+ //   test();
 
     return 0;
 }
