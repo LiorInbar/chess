@@ -4,8 +4,8 @@
 
 #include "state.h"
 #include <iostream>
-
-
+#include <math.h>
+#include <algorithm>
 
 void State::update_squares() {
     for (Piece piece:white_pieces) {
@@ -28,6 +28,8 @@ State::State(Color new_turn, vector<Piece> new_white_pieces,
             board[index].push_back(Square(index,index2));
         }
     }
+
+
     for (Piece piece:white_pieces) {
         board[piece.location.row][piece.location.column].piece = piece;
         board[piece.location.row][piece.location.column].empty = false;
@@ -38,10 +40,11 @@ State::State(Color new_turn, vector<Piece> new_white_pieces,
         board[piece.location.row][piece.location.column].empty = false;
 
     }
+
 }
 
 State::State(const State& original_state):   State(original_state.turn, original_state.white_pieces,
-original_state.black_pieces) {
+                                                   original_state.black_pieces) {
     en_passant_flag=original_state.en_passant_flag;
     en_passant_location=original_state.en_passant_location;
 }
@@ -63,12 +66,12 @@ vector<Location> get_row(Location l1, Location l2){
     vector<Location> row_vector;
     Direction d = l1.column > l2.column ? LEFT : RIGHT;
     if(d == LEFT) {
-        for (int column = l1.column-1; column >= l2.column; column--){
+        for (int column = l1.column-1; column > l2.column; column--){
             row_vector.emplace_back(Location(l1.row,column));
         }
     }
     else{
-        for (int column = l1.column+1; column <= l2.column; column++){
+        for (int column = l1.column+1; column < l2.column; column++){
             row_vector.emplace_back(Location(l1.row,column));
         }
     }
@@ -81,12 +84,12 @@ vector<Location> get_column(Location l1, Location l2){
     vector<Location> column_vector;
     Direction d = l1.row > l2.row ? DOWN : UP;
     if(d==DOWN) {
-        for (int index = l1.row-1; index >= l2.row; index--){
+        for (int index = l1.row-1; index > l2.row; index--){
             column_vector.emplace_back(Location(index,l1.column));
         }
     }
     else{
-        for (int index = l1.row+1; index <= l2.row; index++){
+        for (int index = l1.row+1; index < l2.row; index++){
             column_vector.emplace_back(Location(index,l1.column));
         }
     }
@@ -164,8 +167,8 @@ bool State::possible_queenside_castling(){
                board[0][D].is_empty() &&
                board[0][E].piece.color == WHITE &&
                board[0][A].piece.color == WHITE &&
-                board[0][E].piece.type == KING &&
-                board[0][A].piece.type == ROOK &&
+               board[0][E].piece.type == KING &&
+               board[0][A].piece.type == ROOK &&
                board[0][E].piece.moves_counter == 0 &&
                board[0][A].piece.moves_counter == 0 &&
                !threatened_square(Location(0,E),BLACK) &&
@@ -178,12 +181,12 @@ bool State::possible_queenside_castling(){
                board[7][B].is_empty() &&
                board[7][C].is_empty() &&
                board[7][D].is_empty() &&
-                board[7][E].piece.color == BLACK &&
-                board[7][A].piece.color == BLACK &&
-                board[7][E].piece.type == KING &&
-                board[7][A].piece.type == ROOK &&
-                board[7][E].piece.moves_counter == 0 &&
-                board[7][A].piece.moves_counter == 0 &&
+               board[7][E].piece.color == BLACK &&
+               board[7][A].piece.color == BLACK &&
+               board[7][E].piece.type == KING &&
+               board[7][A].piece.type == ROOK &&
+               board[7][E].piece.moves_counter == 0 &&
+               board[7][A].piece.moves_counter == 0 &&
                !threatened_square(Location(7,E),WHITE) &&
                !threatened_square(Location(7,D),WHITE) &&
                !threatened_square(Location(7,C),WHITE);
@@ -198,12 +201,12 @@ bool State::possible_kingside_castling(){
                !board[0][H].is_empty() &&
                board[0][G].is_empty() &&
                board[0][F].is_empty() &&
-                board[0][E].piece.color == WHITE &&
-                board[0][H].piece.color == WHITE &&
-                board[0][E].piece.type == KING &&
-                board[0][H].piece.type == ROOK &&
-                board[0][E].piece.moves_counter == 0 &&
-                board[0][H].piece.moves_counter == 0 &&
+               board[0][E].piece.color == WHITE &&
+               board[0][H].piece.color == WHITE &&
+               board[0][E].piece.type == KING &&
+               board[0][H].piece.type == ROOK &&
+               board[0][E].piece.moves_counter == 0 &&
+               board[0][H].piece.moves_counter == 0 &&
                !threatened_square(Location(0,E),BLACK) &&
                !threatened_square(Location(0,F),BLACK) &&
                !threatened_square(Location(0,G),BLACK);
@@ -213,12 +216,12 @@ bool State::possible_kingside_castling(){
                !board[7][H].is_empty() &&
                board[7][G].is_empty() &&
                board[7][F].is_empty() &&
-                board[7][E].piece.color == BLACK &&
-                board[7][H].piece.color == BLACK &&
-                board[7][E].piece.type == KING &&
-                board[7][H].piece.type == ROOK &&
-                board[7][E].piece.moves_counter == 0 &&
-                board[7][H].piece.moves_counter == 0 &&
+               board[7][E].piece.color == BLACK &&
+               board[7][H].piece.color == BLACK &&
+               board[7][E].piece.type == KING &&
+               board[7][H].piece.type == ROOK &&
+               board[7][E].piece.moves_counter == 0 &&
+               board[7][H].piece.moves_counter == 0 &&
                !threatened_square(Location(7,E),WHITE) &&
                !threatened_square(Location(7,F),WHITE) &&
                !threatened_square(Location(7,G),WHITE);
@@ -228,7 +231,7 @@ bool State::possible_kingside_castling(){
 
 void State::remove_piece_in_location(Location location){
     vector<Piece>& pieces = board[location.row][location.column].piece.color == WHITE ?
-                           white_pieces : black_pieces;
+                            white_pieces : black_pieces;
     int id = board[location.row][location.column].piece.id;
     pieces.erase(pieces.begin() + id);
     for(int index = id; index<pieces.size(); index++){
@@ -241,7 +244,7 @@ void State::remove_piece_in_location(Location location){
 void State::move_piece(Location from, Location to){
 
     vector<Piece>& pieces = board[from.row][from.column].piece.color == WHITE ?
-                           white_pieces : black_pieces;
+                            white_pieces : black_pieces;
     int id = board[from.row][from.column].piece.id;
     pieces[id].location = to;
     board[to.row][to.column].piece = pieces[id];
@@ -324,7 +327,7 @@ vector<Location> State::direct_course_knight(Piece piece){
     for(Location loc:potential_locations) {
         if (is_knight_move(piece.location,loc) &&
             (!player_piece_on_location(loc, piece.color))) {
-                locations.push_back(loc);
+            locations.push_back(loc);
         }
     }
     return locations;
@@ -345,7 +348,7 @@ vector<Location> State::direct_course_rook(Piece piece) {
         if(player_piece_on_location(Location(piece.location.row, column), piece.color))
             continue;
         vector<Location> row = get_row(piece.location, Location(piece.location.row, column));
-        if (row.size() == 1) {
+        if (row.empty()) {
             locations.push_back(Location(piece.location.row,column));
             continue;
         }
@@ -366,7 +369,7 @@ vector<Location> State::direct_course_rook(Piece piece) {
             continue;
 
         vector<Location> column = get_column(piece.location, Location(row,piece.location.column));
-        if (column.size() == 1) {
+        if (column.empty()) {
             locations.push_back(Location(row,piece.location.column));
             continue;
         }
@@ -439,13 +442,13 @@ vector<Location> State::direct_course_pawn(Piece piece) {
         if (piece.location.column > A &&
             !(board[piece.location.row - 1][piece.location.column - 1].is_empty()) &&
             board[piece.location.row - 1][piece.location.column - 1].piece.color == WHITE)
-                locations.emplace_back(Location(piece.location.row - 1, piece.location.column - 1));
+            locations.emplace_back(Location(piece.location.row - 1, piece.location.column - 1));
 
         //right capture
         if (piece.location.column < H &&
             !(board[piece.location.row - 1][piece.location.column + 1].is_empty()) &&
             board[piece.location.row - 1][piece.location.column + 1].piece.color == WHITE)
-               locations.emplace_back(Location(piece.location.row - 1, piece.location.column + 1));
+            locations.emplace_back(Location(piece.location.row - 1, piece.location.column + 1));
 
     }
     return locations;
@@ -483,7 +486,7 @@ vector<Location> State::direct_course_bishop(Piece piece) {
 /* a player's piece can move to a location if there is a direct course (or a possible castling or en passant
  * capture) from the location of the piece to the target location and the player's king isn't under threat as
  * a result of the move. */
-vector<Location> State::available_locations(Piece piece) {
+const vector<Location> State::available_locations(Piece piece) {
 
     vector<Location> locations = direct_course(piece);
     //check possile en passant
@@ -494,14 +497,14 @@ vector<Location> State::available_locations(Piece piece) {
                 piece.location.row == 4 &&
                 en_passant_flag &&
                 en_passant_location == Location(5, piece.location.column - 1))
-                    locations.emplace_back(Location(5, piece.location.column - 1));
+                locations.emplace_back(Location(5, piece.location.column - 1));
 
             //right en_passant_capture
             if (piece.location.column < H &&
                 piece.location.row == 4 &&
                 en_passant_flag &&
                 en_passant_location == Location(5, piece.location.column + 1))
-                    locations.emplace_back(Location(5, piece.location.column + 1));
+                locations.emplace_back(Location(5, piece.location.column + 1));
         }
         else {
             //left en_passant_capture
@@ -509,14 +512,14 @@ vector<Location> State::available_locations(Piece piece) {
                 piece.location.row == 3 &&
                 en_passant_flag &&
                 en_passant_location == Location(2, piece.location.column - 1))
-                    locations.emplace_back(Location(piece.location.row - 1, piece.location.column - 1));
+                locations.emplace_back(Location(piece.location.row - 1, piece.location.column - 1));
 
             //right en_passant_capture
             if (piece.location.column < H &&
                 piece.location.row == 3 &&
                 en_passant_flag &&
                 en_passant_location == Location(2, piece.location.column + 1))
-                    locations.emplace_back(Location(piece.location.row - 1, piece.location.column + 1));
+                locations.emplace_back(Location(piece.location.row - 1, piece.location.column + 1));
         }
     }
 
@@ -528,7 +531,7 @@ vector<Location> State::available_locations(Piece piece) {
             if(possible_queenside_castling())
                 locations.emplace_back(Location(0,C));
         }
-       else if(piece.color == BLACK){
+        else if(piece.color == BLACK){
             if(possible_kingside_castling())
                 locations.emplace_back(Location(7,G));
             if(possible_queenside_castling())
@@ -560,7 +563,7 @@ vector<Location> State::available_locations(Piece piece) {
 
 vector<Location> State::direct_course(Piece piece) {
     vector<Location> locations;
-  // cout<<piece_type_to_string(piece.type)<<endl;
+    // cout<<piece_type_to_string(piece.type)<<endl;
     switch(piece.type) {
         case PAWN:
             locations = direct_course_pawn(piece);
@@ -585,7 +588,7 @@ vector<Location> State::direct_course(Piece piece) {
 }
 
 
-Move_Type State::move_type(Piece piece, Location to){
+Move_Type State::move_type(Piece piece, Location to) const{
     if (piece.type == PAWN) {
         if (to.column != piece.location.column) {
             if (board[to.row][to.column].is_empty())
@@ -615,12 +618,12 @@ Move_Type State::move_type(Piece piece, Location to){
 
 }
 
-void State::add_piece(piece_type type, Location location){
+void State::add_piece(piece_type type, Location location, Color color){
 
-    vector<Piece>& pieces = turn == WHITE ?
-                           white_pieces :
-                           black_pieces;
-    Piece piece(type,turn,location);
+    vector<Piece>& pieces = color == WHITE ?
+                            white_pieces :
+                            black_pieces;
+    Piece piece(type,color,location);
     piece.id= static_cast<int>(pieces.size());
     pieces.push_back(piece);
     board[location.row][location.column].piece=piece;
@@ -630,21 +633,7 @@ void State::add_piece(piece_type type, Location location){
 }
 
 void State::promotion(Location location){
-    string s;
-    cout<<"choose piece"<<endl;
-    cin>>s;
-    piece_type type;
-    if(s=="queen")
-        type = QUEEN;
-    else if(s=="bishop")
-        type = BISHOP;
-    else if(s=="knight")
-        type = KNIGHT;
-    else if(s=="rook")
-        type = ROOK;
-    else
-        promotion(location);
-    add_piece(type,location);
+    remove_piece_in_location(location);
 }
 
 void State::king_side_castling(){
@@ -673,14 +662,14 @@ void State::make_move(Piece piece, Location to){
             break;
         case PROMOTION:
             move_piece(piece.location,to);
-            promotion(to);
+            remove_piece_in_location(to);
             break;
         case PROMOTION_AND_CAPTURE:
             capture_piece(piece.location,to);
-            promotion(to);
+            remove_piece_in_location(to);
             break;
         case KINGSIDE_CASTLING:
-             king_side_castling();
+            king_side_castling();
             break;
         case QUEENSIDE_CASTLING:
             queen_side_castling();

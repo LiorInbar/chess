@@ -14,11 +14,13 @@ typedef enum {REGULAR, CAPTURE, EN_PASSANT, KINGSIDE_CASTLING, QUEENSIDE_CASTLIN
 
 
 class State {
+private:
     vector<vector<Square>> board;
     Color turn;
     vector<Piece> white_pieces;
     vector<Piece> black_pieces;
     bool en_passant_flag = false; // current en passant possibility and location
+    bool promotion_flag = false;
     Location en_passant_location;
 
     void remove_piece_in_location(Location location);
@@ -76,7 +78,6 @@ public:
     void promotion(Location location);
     int available_moves_for_current_player();
 
-public:
 
 
     /*location of player's king*/
@@ -98,14 +99,14 @@ public:
 
     bool possible_kingside_castling();
 
-    Move_Type move_type(Piece piece, Location to);
+    Move_Type move_type(Piece piece, Location to) const;
 
-    vector<Location> available_locations(Piece piece);
+    const vector<Location> available_locations(Piece piece);
 
     void make_move(Piece piece, Location to);
 
 
-    void add_piece(piece_type type, Location location);
+    void add_piece(piece_type type, Location location, Color color);
 
     void king_side_castling();
 

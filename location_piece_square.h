@@ -22,18 +22,16 @@ struct Location{
     int row;
     int column;
     Location()= default;
-   ~Location()= default;
+    ~Location()= default;
     Location(int new_row ,int new_column): row(new_row),column(new_column){}
     Location(const Location& location) = default;
     Location(Location&& location) noexcept = default;
-    bool operator==(Location location){
-        return row == location.row &&
-               column == location.column;
-    }
     Location& operator=(const Location& location)= default;
     Location& operator= (Location&& location) noexcept = default;
 
 };
+
+bool operator==(const Location location1, const Location location2);
 
 struct Piece {
     int id;
@@ -55,9 +53,9 @@ struct Square {
     Location location;
     Piece piece;
     bool empty = true;
-    Square():location(Location()){};
+    Square():location(Location()){}
     Square(int row, int column):location(row,column){}
-    bool is_empty(){
+    bool is_empty() const{
         return empty;
     }
 };

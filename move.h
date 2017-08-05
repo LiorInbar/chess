@@ -5,11 +5,6 @@
 #ifndef CHESS_VERSION2_MOVE_H
 #define CHESS_VERSION2_MOVE_H
 //
-// Created by Lior on 18/03/2017.
-//
-
-#ifndef CHESS_MOVE_H
-#define CHESS_MOVE_H
 
 #include "state.h"
 
@@ -30,10 +25,13 @@ public:
                                          moveType(mt){}
     Move(const Move& original_move) = default;
 
+    Location getTo() const;
+    void setTo(const Location &value);
 };
 
 
 
-#endif //CHESS_MOVE_H
+
+
 
 #endif //CHESS_VERSION2_MOVE_H

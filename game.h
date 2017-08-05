@@ -9,13 +9,22 @@
 typedef enum {IN_PROGRESS,WHITE_WIN,BLACK_WIN,DRAW} Result;
 
 class Game{
-
-   vector<Move> white_moves;
+    vector<Move> white_moves;
     vector<Move> black_moves;
-    State current_state;
     Result result = IN_PROGRESS;
-
+    bool piece_chosen_check = false;
+    Piece chosen_Piece;
+    State current_state;
 public:
+
+    bool isPiece_chosen() const;
+    vector<Location> current_state_available_locations(Piece piece);
+    void setPiece_chosen_check(bool piece_chosen);
+    void add_piece(piece_type type, Color color, Location location);
+    const Piece &getChosen_Piece() const;
+
+    void setChosen_Piece(const Piece &chosen_Piece);
+
     Game();
     Game(const vector<Move> &white_moves, const vector<Move> &black_moves, const State &current_state) : white_moves(
             white_moves), black_moves(black_moves), current_state(current_state) {}
@@ -43,5 +52,7 @@ public:
     void setResult(Result result);
 
 };
+
+string result_to_string(Result result);
 
 #endif //CHESS_VERSION2_GAME_H

@@ -69,7 +69,7 @@ Color Game::Turn() {
 Game::Game(const State &current_state) : current_state(current_state) {}
 
 Game::Game():current_state(initial_state()){
-  //  State state=initial_state();
+    //  State state=initial_state();
 
 }
 
@@ -77,7 +77,8 @@ void Game::move(Piece piece, Location location) {
     State new_state(current_state);
     new_state.make_move(piece, location);
     vector<Move>& moves = Turn() == WHITE ? white_moves : black_moves;
-    moves.push_back(Move(current_state,new_state,piece.location,location,piece.type,current_state.move_type(piece,location)));
+    moves.push_back(Move(current_state,new_state,piece.location,location,piece.type,
+                         current_state.move_type(piece,location)));
     current_state = new_state;
     if(current_state.is_mate()){
         result=Turn()==WHITE ? BLACK_WIN : WHITE_WIN;
@@ -117,5 +118,44 @@ Result Game::getResult() const {
 
 void Game::setResult(Result result) {
     Game::result = result;
+}
+
+bool Game::isPiece_chosen() const {
+    return piece_chosen_check;
+}
+
+vector<Location> Game::current_state_available_locations(Piece piece)
+{
+    return current_state.available_locations(piece);
+}
+
+void Game::setPiece_chosen_check(bool piece_chosen_check) {
+    Game::piece_chosen_check = piece_chosen_check;
+}
+
+void Game::add_piece(piece_type type, Color color, Location location)
+{
+    current_state.add_piece(type,location,color);
+}
+
+const Piece &Game::getChosen_Piece() const {
+    return chosen_Piece;
+}
+
+void Game::setChosen_Piece(const Piece &chosen_Piece) {
+    Game::chosen_Piece = chosen_Piece;
+}
+
+string result_to_string(Result result){
+    switch(result){
+        case IN_PROGRESS:
+            return "in progress";
+        case BLACK_WIN:
+            return "Black Win!";
+        case WHITE_WIN:
+            return "White Win!";
+        case DRAW:
+            return "Draw!";
+    }
 }
 

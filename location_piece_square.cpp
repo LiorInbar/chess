@@ -32,3 +32,8 @@ string piece_type_to_string(piece_type type){
 void print_location(Location location){
     cout<<"("<<location.row<<","<<location.column<<")"<<endl;
 }
+
+bool operator==(const Location location1, const Location location2){
+    return location1.row == location2.row &&
+           location1.column == location2.column;
+}
