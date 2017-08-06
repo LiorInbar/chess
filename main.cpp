@@ -1,184 +1,72 @@
-#include <iostream>
-//#include "move.h"
+#include <QApplication>
+#include <QProgressBar>
+#include "window.h"
+#include <QPushButton>
 #include "game.h"
+#include "qsquare.h"
+#include "promotion_button.h"
+#include <QDir>
+#include <QMainWindow>
+#include <QTextStream>
 
 
 
 
+int main(int argc, char **argv)
+{
 
-void test() {
-    vector<Piece> white_pieces;
-    Piece white_king(KING, WHITE, Location(0, E)),
-            white_queen(QUEEN, WHITE, Location(0, D)),
-            white_rook1(ROOK, WHITE, Location(0, A)),
-            white_rook2(ROOK, WHITE, Location(0, H)),
-            white_bishop1(BISHOP, WHITE, Location(0, C)),
-            white_bishop2(BISHOP, WHITE, Location(0, F)),
-            white_knight1(KNIGHT, WHITE, Location(0, B)),
-            white_knight2(KNIGHT, WHITE, Location(0, G));
+ QApplication app (argc, argv);
+ app.setApplicationDisplayName("chess");
+Game game;
 
-    white_pieces.push_back(white_king);
-    white_pieces.push_back(white_queen);
-    white_pieces.push_back(white_bishop1);
-    white_pieces.push_back(white_bishop2);
-    white_pieces.push_back(white_rook1);
-    white_pieces.push_back(white_rook2);
-    white_pieces.push_back(white_knight1);
-    white_pieces.push_back(white_knight2);
+ QWidget window;
+ window.setFixedSize(1200, 600);
 
-    for (int c = 0; c <= 7; c++) {
-        white_pieces.emplace_back(Piece(PAWN, WHITE, Location(1, c)));
-    }
-    for (int index = 0; index < white_pieces.size(); index++) {
-        white_pieces[index].id=index;
-    }
+ QPlainTextEdit* messages = new QPlainTextEdit(&window);
+ messages->setObjectName("messages");
+ messages->setGeometry(700, 20, 200, 70);
+ messages->setPlainText(QString("white player turn"));
 
-    vector<Piece> black_pieces;
-    Piece black_king(KING, BLACK, Location(7, E)),
-            black_queen(QUEEN, BLACK, Location(7, D)),
-            black_rook1(ROOK, BLACK, Location(7, A)),
-            black_rook2(ROOK, BLACK, Location(7, H)),
-            black_bishop1(BISHOP, BLACK, Location(7, C)),
-            black_bishop2(BISHOP, BLACK, Location(7, F)),
-            black_knight1(KNIGHT, BLACK, Location(7, B)),
-            black_knight2(KNIGHT, BLACK, Location(7, G));
 
-    black_pieces.push_back(black_king);
-    black_pieces.push_back(black_queen);
-    black_pieces.push_back(black_bishop1);
-    black_pieces.push_back(black_bishop2);
-    black_pieces.push_back(black_rook1);
-    black_pieces.push_back(black_rook2);
-    black_pieces.push_back(black_knight1);
-    black_pieces.push_back(black_knight2);
+// h->setVisible(false);
 
-    for (int c = A; c <= H; c++) {
-        black_pieces.emplace_back(Piece(PAWN, BLACK, Location(6, c)));
-    }
+vector<vector<Qsquare*>> qsquares;
 
-    for (int index = 0; index < black_pieces.size(); index++) {
-        black_pieces[index].id=index;
+for(int i=0;i<8;i++){
+    qsquares.push_back(vector<Qsquare*>());
+    for(int j=0;j<8;j++){
+       qsquares[i].push_back(new Qsquare(qsquares,&window));
+       qsquares[i][j]->setGeometry(20+j*70, 500-i*70, 70, 70);
+       qsquares[i][j]->setLocation(Location(i,j));
+       qsquares[i][j]->setGame(&game);
+       qsquares[i][j]->setQboard(qsquares);
+       qsquares[i][j]->update_Qsquare();
 
     }
-
-
-    State state(WHITE, white_pieces, black_pieces);
-
-    print_board(state);
-    cout<<"-----------------"<<endl;
-    Piece pawny = state.getWhite_pieces()[state.getSquare(Location(1,A)).piece.id];
-    state.make_move(pawny,Location(3,A));
-    print_board(state);
-    cout<<"-----------------"<<endl;
-    Piece knighty = state.getBlack_pieces()[state.getSquare(Location(7,B)).piece.id];
-    state.make_move(knighty,Location(5,A));
-    print_board(state);
-    cout<<"-----------------"<<endl;
-
-
-    print_location(state.getWhite_pieces()[8].location);
-
-    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(3,A)).piece.id])){
-       print_location(loc);
-    }
-    cout<<state.getSquare(Location(3,A)).piece.id<<endl;
-
-    Piece rooky = state.getWhite_pieces()[state.getSquare(Location(0,A)).piece.id];
-    for(Location loc:state.available_locations(rooky)){
-        print_location(loc);
-    }
-    state.make_move(state.getWhite_pieces()[state.getSquare(Location(3,A)).piece.id],Location(4,A));
-    for(Location loc:state.available_locations(state.getBlack_pieces()[state.getSquare(Location(7,A)).piece.id])){
-          print_location(loc);
-      }
-    state.make_move(state.getBlack_pieces()[state.getSquare(Location(6,E)).piece.id],Location(4,E));
-    print_board(state);
-    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(1,E)).piece.id])){
-        print_location(loc);
-    }
-    cout<<"-----------------"<<endl;
-    state.make_move(state.getWhite_pieces()[state.getSquare(Location(0,G)).piece.id],Location(2,F));
-    print_board(state);
-    for(Location loc:state.available_locations(state.getBlack_pieces()[state.getSquare(Location(7,F)).piece.id])){
-        print_location(loc);
-    }
-    cout<<"-----------------"<<endl;
-
-    state.make_move(state.getBlack_pieces()[state.getSquare(Location(7,F)).piece.id],Location(3,B));
-    print_board(state);
-    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(1,D)).piece.id])){
-        print_location(loc);
-    }
-    cout<<"-----------------"<<endl;
-    state.make_move(state.getWhite_pieces()[state.getSquare(Location(1,E)).piece.id],Location(3,E));
-    print_board(state);
-    for(Location loc:state.available_locations(state.getBlack_pieces()[state.getSquare(Location(3,B)).piece.id])){
-        print_location(loc);
-    }
-    cout<<"-----------------"<<endl;
-    state.make_move(state.getBlack_pieces()[state.getSquare(Location(6,B)).piece.id],Location(4,B));
-    print_board(state);
-    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(4,A)).piece.id])){
-        print_location(loc);
-    }
-    cout<<"-----------------"<<endl;
-    state.make_move(state.getWhite_pieces()[state.getSquare(Location(2,F)).piece.id],Location(4,E));
-    print_board(state);
-    for(Location loc:state.available_locations(state.getBlack_pieces()[state.getSquare(Location(7,D)).piece.id])){
-        print_location(loc);
-    }
-    cout<<"-----------------"<<endl;
-    state.make_move(state.getBlack_pieces()[state.getSquare(Location(7,G)).piece.id],Location(5,H));
-    print_board(state);
-    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(4,A)).piece.id])){
-        print_location(loc);
-    }
-    cout<<"-----------------"<<endl;
-    state.make_move(state.getWhite_pieces()[state.getSquare(Location(0,F)).piece.id],Location(3,C));
-    print_board(state);
-    for(Location loc:state.available_locations(state.getBlack_pieces()[state.getSquare(Location(7,E)).piece.id])){
-        print_location(loc);
-    }
-    cout<<"-----------------"<<endl;
-    state.make_move(state.getBlack_pieces()[state.getSquare(Location(7,E)).piece.id],Location(7,G));
-    print_board(state);
-    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(0,E)).piece.id])){
-        print_location(loc);
-    }
-    cout<<"-----------------"<<endl;
-    state.make_move(state.getWhite_pieces()[state.getSquare(Location(0,E)).piece.id],Location(1,E));
-    print_board(state);
-    for(Location loc:state.available_locations(state.getBlack_pieces()[state.getSquare(Location(7,C)).piece.id])){
-        print_location(loc);
-    }
-    cout<<"-----------------"<<endl;
-    state.make_move(state.getBlack_pieces()[state.getSquare(Location(7,D)).piece.id],Location(4,G));
-    print_board(state);
-    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(1,E)).piece.id])){
-        print_location(loc);
-    }
-    cout<<"-----------------"<<endl;
-    state.make_move(state.getWhite_pieces()[state.getSquare(Location(1,D)).piece.id],Location(3,D));
-    print_board(state);
-    for(Location loc:state.available_locations(state.getBlack_pieces()[state.getSquare(Location(3,B)).piece.id])){
-        print_location(loc);
-    }
-    cout<<"-----------------"<<endl;
-    state.make_move(state.getBlack_pieces()[state.getSquare(Location(4,G)).piece.id],Location(2,E));
-    print_board(state);
-    for(Location loc:state.available_locations(state.getWhite_pieces()[state.getSquare(Location(3,C)).piece.id])){
-        print_location(loc);
-    }
-    cout<<state.available_moves_for_current_player()<<endl;
-
 }
 
+vector<promotion_button*> promotion_buttons;
+for(int i=0;i<4;i++){
+    promotion_buttons.push_back(new promotion_button(qsquares,&window));
+    promotion_buttons[i]->setGeometry(700+i*70, 100, 70, 70);
+    promotion_buttons[i]->setVisible(false);
+    promotion_buttons[i]->setGame(&game);
+}
+promotion_buttons[0]->setObjectName("queen");
+promotion_buttons[1]->setObjectName("rook");
+promotion_buttons[2]->setObjectName("knight");
+promotion_buttons[3]->setObjectName("bishop");
 
 
+/*QPushButton *buttonInfo = new QPushButton("Info", &window);
+ buttonInfo->setGeometry(10, 10, 80, 30);
 
-int main() {
-Game game;
- //   test();
+QPushButton *buttonQuit = new QPushButton("Quit", &window);
+ buttonQuit->setGeometry(10, 40, 80, 30);*/
 
-    return 0;
+window.show();
+
+// Add your code here
+
+return app.exec();
 }
