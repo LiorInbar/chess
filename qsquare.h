@@ -16,31 +16,31 @@ class Qsquare : public QPushButton
     Game* game;
     vector<vector<Qsquare*>>& Qboard;
     Location location;
-    bool changeColorWhenEnter = true;
-    void update_pink_Qsquare();
-    void update_blue_Qsquare();
     virtual void enterEvent( QEvent* e );
     virtual void leaveEvent( QEvent* e );
     void promotion();
+    void mark_Qsquare();
+    bool possible_square_choice_check();
 
     Q_OBJECT
 public:
 
+    explicit Qsquare(vector<vector<Qsquare*>>& board,QWidget *parent = nullptr);
+
     void setLocation(const Location location);
     void setGame(Game* game);
-    explicit Qsquare(vector<vector<Qsquare*>>& board,QWidget *parent = nullptr);
-    void mark_Qsquare();
-    void update_Qsquare();
     vector<vector<Qsquare *> > &getQboard() const;
     void setQboard(const vector<vector<Qsquare *> > &value);
     void update_message();
-
+    void update_Qsquare();
 
 signals:
 
 public slots:
     void Qsquare_clicked(bool checked);
 };
+
+
 void openQboard(Qsquare square);
 void end_promotion(Qsquare square);
 #endif // QSQUARES_H

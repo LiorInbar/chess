@@ -1,8 +1,11 @@
 #ifndef PROMOTION_BUTTON_H
 #define PROMOTION_BUTTON_H
+
 #include <QWidget>
 #include <QPushButton>
+#include <QTextStream>
 #include "game.h"
+
 class Qsquare;
 void openQboard(Qsquare);
 
@@ -13,6 +16,7 @@ class promotion_button : public QPushButton
 
     Q_OBJECT
 public:
+
     explicit promotion_button(vector<vector<Qsquare*>>& board,QWidget *parent = nullptr);
 
     Game *getGame() const;
