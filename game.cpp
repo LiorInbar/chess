@@ -73,19 +73,26 @@ Game::Game():current_state(initial_state()){
 
 }
 
-void Game::move(Piece piece, Location location) {
-    State new_state(current_state);
-    new_state.make_move(piece, location);
-    vector<Move>& moves = Turn() == WHITE ? white_moves : black_moves;
-    moves.push_back(Move(current_state,new_state,piece.location,location,piece.type,
-                         current_state.move_type(piece,location)));
-    current_state = new_state;
+void Game::update_result() {
     if(current_state.is_mate()){
         result=Turn()==WHITE ? BLACK_WIN : WHITE_WIN;
     }
     if(current_state.is_stale_mate()){
         result=DRAW;
     }
+}
+
+void Game::move(Piece piece, Location location) {
+    State new_state(current_state);
+    new_state.make_move(piece, location);
+    Move_Type type = current_state.move_type(piece,location);
+    vector<Move>& moves = Turn() == WHITE ? white_moves : black_moves;
+    moves.push_back(Move(current_state,new_state,piece.location,location,piece.type,
+                         current_state.move_type(piece,location)));
+
+    current_state = new_state;
+    if((type!=PROMOTION)&&(type!=PROMOTION_AND_CAPTURE))
+        update_result();
 }
 
 const vector<Move> &Game::getWhite_moves() const {
@@ -133,17 +140,17 @@ void Game::setPiece_chosen_check(bool piece_chosen_check) {
     Game::piece_chosen_check = piece_chosen_check;
 }
 
-void Game::add_piece(piece_type type, Color color, Location location)
-{
-    current_state.add_piece(type,location,color);
-}
-
 const Piece &Game::getChosen_Piece() const {
     return chosen_Piece;
 }
 
 void Game::setChosen_Piece(const Piece &chosen_Piece) {
     Game::chosen_Piece = chosen_Piece;
+}
+
+void Game::promotion(Location location, piece_type type) {
+    current_state.promotion(location,type);
+    update_result();
 }
 
 string result_to_string(Result result){

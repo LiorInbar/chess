@@ -2,14 +2,13 @@
 // Created by Lior on 25/07/2017.
 //
 
-#ifndef UNTITLED1_LOCATION_PIECE_SQUARE_H
-#define UNTITLED1_LOCATION_PIECE_SQUARE_H
+#ifndef CHESS_LOCATION_PIECE_SQUARE_H
+#define CHESS_LOCATION_PIECE_SQUARE_H
 //
 // Created by Lior on 18/03/2017.
 //
 
-#ifndef CHESS_SQUARE_H
-#define CHESS_SQUARE_H
+
 
 #include <string>
 #include <vector>
@@ -64,6 +63,5 @@ string color_to_string(Color color);
 string piece_type_to_string(piece_type type);
 void print_location(Location location);
 
-#endif //CHESS_SQUARE_H
 
-#endif //UNTITLED1_LOCATION_PIECE_SQUARE_H
+#endif //CHESS_LOCATION_PIECE_SQUARE_H

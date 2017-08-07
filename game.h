@@ -15,15 +15,9 @@ class Game{
     bool piece_chosen_check = false;
     Piece chosen_Piece;
     State current_state;
+
+    void update_result();
 public:
-
-    bool isPiece_chosen() const;
-    vector<Location> current_state_available_locations(Piece piece);
-    void setPiece_chosen_check(bool piece_chosen);
-    void add_piece(piece_type type, Color color, Location location);
-    const Piece &getChosen_Piece() const;
-
-    void setChosen_Piece(const Piece &chosen_Piece);
 
     Game();
     Game(const vector<Move> &white_moves, const vector<Move> &black_moves, const State &current_state) : white_moves(
@@ -32,9 +26,12 @@ public:
     Game(const State &current_state);
 
     Game(const Game& game)= default;
-    Color Turn();
-    void move(Piece piece, Location location);
+    /*geters and seters*/
 
+    bool isPiece_chosen() const;
+    void setPiece_chosen_check(bool piece_chosen);
+    const Piece &getChosen_Piece() const;
+    void setChosen_Piece(const Piece &chosen_Piece);
     const vector<Move> &getWhite_moves() const;
 
     void setWhite_moves(const vector<Move> &white_moves);
@@ -50,7 +47,14 @@ public:
     Result getResult() const;
 
     void setResult(Result result);
+    //--------------------------------
 
+    vector<Location> current_state_available_locations(Piece piece);
+
+    void promotion(Location location, piece_type type);
+
+    Color Turn();
+    void move(Piece piece, Location location);
 };
 
 string result_to_string(Result result);
