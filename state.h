@@ -21,19 +21,24 @@ private:
     vector<Piece> black_pieces;
     bool en_passant_flag = false; // current en passant possibility and location
     Location en_passant_location;
-    vector<Location> direct_course_pawn(Piece piece);
-    vector<Location> direct_course_knight(Piece piece);
-    vector<Location> direct_course_bishop(Piece piece);
-    vector<Location> direct_course_rook(Piece piece);
-    vector<Location> direct_course_queen(Piece piece);
-    vector<Location> direct_course_king(Piece piece);
+
+
+
+    vector<Location> direct_course_pawn(const Piece& piece) const;
+    vector<Location> direct_course_knight(const Piece& piece) const;
+    vector<Location> direct_course_bishop(const Piece& piece) const;
+    vector<Location> direct_course_rook(const Piece& piece) const;
+    vector<Location> direct_course_queen(const Piece& piece) const;
+    vector<Location> direct_course_king(const Piece& piece) const;
+
+
     void remove_piece_in_location(Location location);
-    void capture_piece(Location from, Location to);
-    void capture_piece_en_passant(Location from, Location to);
-    void move_piece(Location from, Location to);
-    void add_piece(piece_type type, Location location, Color color);
+    void capture_piece(const Location& from, const Location& to);
+    void capture_piece_en_passant(const Location& from, const Location& to);
+    void move_piece(const Location& from, const Location& to);
+    void add_piece(const piece_type type, const Location& location, const Color color);
     /*location of player's king*/
-    Location king_location(Color color);
+    Location king_location(const Color color) const;
     void king_side_castling();
     void queen_side_castling();
 
@@ -59,26 +64,26 @@ public:
     const Location &getEn_passant_location() const;
     void setEn_passant_location(const Location &en_passant_location);
 //------------------------------------------
-    State& operator=(State state);
-    Square getSquare (Location location) const;
-    bool player_piece_on_location(Location location, Color color);
-    vector<Location> direct_course(Piece piece);
-    int total_available_moves_for_current_player();
+    State& operator=(const State& state);
+    Square getSquare (const Location& location) const;
+    bool player_piece_on_location(const Location& location, const Color color) const;
+    vector<Location> direct_course(const Piece& piece) const;
+    int total_available_moves_for_current_player() const;
     /*check if player is in check position (against him)*/
-    bool is_in_check(Color player);
-    bool is_mate();
-    bool is_stale_mate();
+    bool is_in_check(const Color player) const;
+    bool is_mate() const;
+    bool is_stale_mate() const;
     /*  check if location is in a direct threat from a piece of threatening_player
      * location is threatened by a player if one of the player's pieces threatening it.
      * except for pawns, a piece is threatening a square if it has a direct course to it (see
      * function "direct_course")*/
-    bool threatened_square(Location location, Color threatening_player);
-    bool possible_queenside_castling();
-    bool possible_kingside_castling();
-    Move_Type move_type(Piece piece, Location to) const;
-    const vector<Location> available_locations(Piece piece);
-    void make_move(Piece piece, Location to);
-    void promotion(Location location, piece_type type);
+    bool threatened_square(const Location& location, Color threatening_player) const;
+    bool possible_queenside_castling() const;
+    bool possible_kingside_castling() const;
+    Move_Type move_type(const Piece& piece, const Location& to) const;
+    const vector<Location> available_locations(const Piece& piece) const;
+    void make_move(Piece& piece, const Location& to);
+    void promotion(const Location& location, piece_type type);
 
 };
 

@@ -41,7 +41,7 @@ State::State(const State& original_state):
     en_passant_location=original_state.en_passant_location;
 }
 
-State& State::operator=(State state) {
+State& State::operator=(const State& state) {
     turn =state.turn;
     white_pieces = state.white_pieces;
     black_pieces = state.black_pieces;
@@ -55,7 +55,7 @@ State& State::operator=(State state) {
     return *this;
 }
 
-Location State::king_location(Color color) { //nothing to explain
+Location State::king_location(const Color color) const{ //nothing to explain
     vector<Piece> pieces = color == WHITE ? white_pieces : black_pieces;
     for(Piece piece:pieces){
         if(piece.type == KING)
@@ -65,7 +65,7 @@ Location State::king_location(Color color) { //nothing to explain
 
 /*return vector of all the locations in the row between
  * l1 and l2, not including*/
-vector<Location> get_row(Location l1, Location l2){
+vector<Location> get_row(const Location& l1, const Location& l2){
     vector<Location> row_vector;
     Direction direction = l1.column > l2.column ? LEFT : RIGHT;
     if(direction == LEFT) {
@@ -83,7 +83,7 @@ vector<Location> get_row(Location l1, Location l2){
 
 /*Return vector of all the locations in the column between
  * l1 and l2, not including*/
-vector<Location> get_column(Location l1, Location l2){
+vector<Location> get_column(const Location& l1, const Location& l2){
     vector<Location> column_vector;
     Direction direction = l1.row > l2.row ? DOWN : UP;
     if(direction==DOWN) {
@@ -101,7 +101,7 @@ vector<Location> get_column(Location l1, Location l2){
 
 /*return vector of all the locations in the diagonal between
  * l1 and l2, not including*/
-vector<Location> get_diagonal(Location l1, Location l2){
+vector<Location> get_diagonal(const Location& l1, const Location& l2){
     vector<Location> diagonal_vector;
     Direction horizontal_direction = l1.column > l2.column ? LEFT : RIGHT;
     Direction vertical_direction = l1.row > l2.row ? DOWN : UP;
@@ -137,7 +137,7 @@ vector<Location> get_diagonal(Location l1, Location l2){
 
 
 
-bool State::threatened_square(Location location, Color threatening_player) {
+bool State::threatened_square(const Location& location, const Color threatening_player) const{
     vector<Piece> pieces = threatening_player == WHITE ? white_pieces : black_pieces;
     for(Piece piece: pieces){
         for(Location loc: direct_course(piece)){
@@ -148,14 +148,14 @@ bool State::threatened_square(Location location, Color threatening_player) {
     }
     return false;
 }
-bool State::is_in_check(Color color){
+bool State::is_in_check(const Color color) const{
     /*check if the king square is under threat*/
     Color opposition = color == WHITE ? BLACK : WHITE;
     return threatened_square(king_location(color), opposition);
 
 }
 
-bool State::possible_queenside_castling(){
+bool State::possible_queenside_castling() const{
 
     if(turn == WHITE){
         return !(board[0][E].is_empty()) &&
@@ -192,7 +192,7 @@ bool State::possible_queenside_castling(){
 
 }
 
-bool State::possible_kingside_castling(){
+bool State::possible_kingside_castling() const{
 
     if(turn == WHITE){
         return !board[0][E].is_empty() &&
@@ -240,7 +240,7 @@ void State::remove_piece_in_location(Location location){
     board[location.row][location.column].empty=true;
 }
 
-void State::move_piece(Location from, Location to){
+void State::move_piece(const Location& from, const Location& to){
 
     vector<Piece>& pieces = board[from.row][from.column].piece.color == WHITE ? white_pieces : black_pieces;
     int id = board[from.row][from.column].piece.id;
@@ -251,20 +251,20 @@ void State::move_piece(Location from, Location to){
 
 }
 
-void State::capture_piece(Location from, Location to){
+void State::capture_piece(const Location& from, const Location& to){
     remove_piece_in_location(to);
     move_piece(from,to);
 }
 
 
-void State::capture_piece_en_passant(Location from, Location to){
-    Location captured_pawn_location = 
+void State::capture_piece_en_passant(const Location& from, const Location& to){
+    Location captured_pawn_location =
             turn == WHITE ? Location(to.row-1, to.column): Location(to.row+1, to.column);
     remove_piece_in_location(captured_pawn_location);
     move_piece(from,to);
 }
 
-vector<Location> get_diagonals(Location location) {
+vector<Location> get_diagonals(const Location& location) {
     vector<Location> locations;
     for (int row_index = location.row + 1, column_index = location.column + 1;
          row_index <= 7 && column_index <= H; row_index++, column_index++) {
@@ -285,7 +285,7 @@ vector<Location> get_diagonals(Location location) {
     return locations;
 }
 
-bool is_knight_move(Location from, Location to){//check if the target location can be reached from the  piece location with a knight move.
+bool is_knight_move(const Location& from, const Location& to){//check if the target location can be reached from the  piece location with a knight move.
 
     return ((abs(from.row - to.row) == 2
              && abs(from.column - to.column) == 1)
@@ -293,7 +293,7 @@ bool is_knight_move(Location from, Location to){//check if the target location c
                 && abs(from.column - to.column) == 2));
 }
 
-vector<Location> two_squares_distance(Location location){
+vector<Location> two_squares_distance(const Location& location){
     vector<Location> locations;
     for (int row_index = max(location.row-2, 0); row_index <= min(7, location.row+2); row_index++){
         for (int column_index = max(location.column-2, 0); column_index <= min(7, location.column+2); column_index++) {
@@ -304,7 +304,7 @@ vector<Location> two_squares_distance(Location location){
     return locations;
 }
 
-vector<Location> one_squares_distance(Location location){
+vector<Location> one_squares_distance(const Location& location){
     vector<Location> locations;
     for (int row_index = max(location.row-1, 0); row_index <= min(7, location.row+1); row_index++){
         for (int column_index = max(location.column-1, 0); column_index <= min(7, location.column+1); column_index++) {
@@ -315,7 +315,7 @@ vector<Location> one_squares_distance(Location location){
     return locations;
 }
 
-vector<Location> State::direct_course_knight(Piece piece){
+vector<Location> State::direct_course_knight(const Piece& piece) const{
     vector<Location> locations;
     vector<Location> potential_locations = two_squares_distance(piece.location);
     for(Location loc:potential_locations) {
@@ -328,13 +328,13 @@ vector<Location> State::direct_course_knight(Piece piece){
 }
 
 
-bool State::player_piece_on_location(Location location, Color color){
+bool State::player_piece_on_location(const Location& location, const Color color) const{
     if(board[location.row][location.column].is_empty())
         return false;
     return board[location.row][location.column].piece.color == color;
 }
 
-vector<Location> State::direct_course_rook(Piece piece) {
+vector<Location> State::direct_course_rook(const Piece& piece) const{
     vector<Location> locations;
     for(int column = 0; column < 8; column++){
         if(column == piece.location.column)
@@ -381,7 +381,7 @@ vector<Location> State::direct_course_rook(Piece piece) {
     return locations;
 }
 
-vector<Location> State::direct_course_queen(Piece piece){
+vector<Location> State::direct_course_queen(const Piece& piece)const{
     vector<Location> diagonal_locations, raws_and_columns_locations, locations;
     diagonal_locations = direct_course_bishop(piece);
     raws_and_columns_locations = direct_course_rook(piece);
@@ -394,7 +394,7 @@ vector<Location> State::direct_course_queen(Piece piece){
     return locations;
 }
 
-vector<Location> State::direct_course_king(Piece piece) {
+vector<Location> State::direct_course_king(const Piece& piece) const{
     vector<Location> one_squares_distance_locations = one_squares_distance(piece.location);
     vector<Location> locations;
     for(Location location:one_squares_distance_locations){
@@ -404,7 +404,7 @@ vector<Location> State::direct_course_king(Piece piece) {
     return locations;
 }
 
-vector<Location> State::direct_course_pawn(Piece piece) {
+vector<Location> State::direct_course_pawn(const Piece& piece) const{
     vector<Location> locations;
     int row = piece.location.row;
     int column = piece.location.column;
@@ -450,7 +450,7 @@ vector<Location> State::direct_course_pawn(Piece piece) {
     return locations;
 }
 
-vector<Location> State::direct_course_bishop(Piece piece) {
+vector<Location> State::direct_course_bishop(const Piece& piece) const{
 
     vector<Location> locations;
     vector<Location> diagonals = get_diagonals(piece.location);
@@ -482,14 +482,14 @@ vector<Location> State::direct_course_bishop(Piece piece) {
 /* a player's piece can move to a location if there is a direct course (or a possible castling or en passant
  * capture) from the location of the piece to the target location and the player's king isn't under threat as
  * a result of the move. */
-const vector<Location> State::available_locations(Piece piece) {
+const vector<Location> State::available_locations(const Piece& piece) const{
 
     vector<Location> locations = direct_course(piece);
     //check possile en passant
     int column = piece.location.column;
     int row = piece.location.row;
     if(piece.type == PAWN) {
-        
+
         if (piece.color == WHITE) {
             //left en_passant_capture
             if (column > A &&
@@ -560,7 +560,7 @@ const vector<Location> State::available_locations(Piece piece) {
 }
 
 
-vector<Location> State::direct_course(Piece piece) {
+vector<Location> State::direct_course(const Piece& piece) const{
     vector<Location> locations;
     // cout<<piece_type_to_string(piece.type)<<endl;
     switch(piece.type) {
@@ -587,7 +587,7 @@ vector<Location> State::direct_course(Piece piece) {
 }
 
 
-Move_Type State::move_type(Piece piece, Location to) const{
+Move_Type State::move_type(const Piece& piece, const Location& to) const{
 
     int current_column = piece.location.column;
     if (piece.type == PAWN) {
@@ -619,7 +619,7 @@ Move_Type State::move_type(Piece piece, Location to) const{
 
 }
 
-void State::add_piece(piece_type type, Location location, Color color){
+void State::add_piece(const piece_type type, const Location& location, const Color color){
 
     vector<Piece>& pieces = color == WHITE ? white_pieces : black_pieces;
     Piece piece(type,color,location);
@@ -631,7 +631,7 @@ void State::add_piece(piece_type type, Location location, Color color){
 
 }
 
-void State::promotion(Location location, piece_type type){
+void State::promotion(const Location& location, const piece_type type){
     Color color = board[location.row][location.column].piece.color;
     remove_piece_in_location(location);
     add_piece(type,location,color);
@@ -650,9 +650,9 @@ void State::queen_side_castling(){
 }
 
 
-void State::make_move(Piece piece, Location to){
-
-    piece.moves_counter++;
+void State::make_move(Piece& piece, const Location& to){
+    vector<Piece>& pieces = piece.color == WHITE ? white_pieces : black_pieces;
+    pieces[piece.id].moves_counter++;
     en_passant_flag = false;
     switch(move_type(piece,to)){
         case EN_PASSANT:
@@ -688,7 +688,7 @@ Color State::getTurn() const {
     return turn;
 }
 
-void State::setTurn(Color turn) {
+void State::setTurn(const Color turn) {
     State::turn = turn;
 }
 
@@ -724,12 +724,11 @@ void State::setEn_passant_location(const Location &en_passant_location) {
     State::en_passant_location = en_passant_location;
 }
 
-Square State::getSquare (Location location) const{
+Square State::getSquare (const Location& location) const{
     return board[location.row][location.column];
 }
 
-
-int State::total_available_moves_for_current_player(){
+int State::total_available_moves_for_current_player() const{
     vector<Piece> pieces = turn == WHITE ? white_pieces : black_pieces;
     int total_moves = 0;
     for(Piece piece:pieces){
@@ -737,16 +736,16 @@ int State::total_available_moves_for_current_player(){
     }
     return total_moves;
 }
-bool State::is_mate() {
+
+bool State::is_mate() const{
     return is_in_check(turn) && total_available_moves_for_current_player() == 0;
 }
 
-bool State::is_stale_mate() {
+bool State::is_stale_mate() const{
     return !(is_in_check(turn)) && total_available_moves_for_current_player() == 0;
 }
 
-
-void print_board(const State& state) {
+void print_board(const State& state){
     for (int row = 0; row < 8; row++) {
         for (int column = 0; column < 8; column++) {
             Square square = state.getSquare(Location(row,column));

@@ -9,15 +9,14 @@ bool shutdown_board = false;
 
 
 Qsquare::Qsquare( vector<vector<Qsquare*>>& board,QWidget *parent) :
-    QPushButton(parent), Qboard(board)
-{
+    QPushButton(parent), Qboard(board){
+
     connect(this,SIGNAL(clicked(bool)),this,SLOT(Qsquare_clicked(bool)));
 }
 
-bool Qsquare::possible_square_choice_check(){
+bool Qsquare::possible_square_choice_check() const{
 
     Square square = game->getCurrent_state().getSquare(location);
-
     return (!(game->isPiece_chosen())&&(!shutdown_board)
     &&(!(square.is_empty()))&&(square.piece.color==game->Turn()));
 }
@@ -98,7 +97,7 @@ void Qsquare::Qsquare_clicked(bool checked){
     }
     if(std::find(locations.begin(), locations.end(), location) != locations.end()) {
       Move_Type type = game->getCurrent_state().move_type(game->getChosen_Piece(),location);
-      game->move(game->getChosen_Piece(),location);
+      game->move(location);
       game->setPiece_chosen_check(false);
       for(Location location:locations){
          getQboard()[location.row][location.column]->update_Qsquare();

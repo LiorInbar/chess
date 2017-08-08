@@ -49,12 +49,12 @@ public:
     void setResult(Result result);
     //--------------------------------
 
-    vector<Location> current_state_available_locations(Piece piece);
+    vector<Location> current_state_available_locations(const Piece& piece) const;
 
-    void promotion(Location location, piece_type type);
+    void promotion(const Location &location, const piece_type type);
 
-    Color Turn();
-    void move(Piece piece, Location location);
+    Color Turn() const;
+    void move(const Location& location);
 };
 
 string result_to_string(Result result);

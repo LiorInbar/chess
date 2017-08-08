@@ -62,15 +62,16 @@ State initial_state(){
 }
 
 
-Color Game::Turn() {
-    return white_moves.size()>black_moves.size() ? BLACK : WHITE;
-}
 
 Game::Game(const State &current_state) : current_state(current_state) {}
 
 Game::Game():current_state(initial_state()){
     //  State state=initial_state();
 
+}
+
+Color Game::Turn() const{
+    return white_moves.size()>black_moves.size() ? BLACK : WHITE;
 }
 
 void Game::update_result() {
@@ -82,13 +83,13 @@ void Game::update_result() {
     }
 }
 
-void Game::move(Piece piece, Location location) {
+void Game::move(const Location& location) {
     State new_state(current_state);
-    new_state.make_move(piece, location);
-    Move_Type type = current_state.move_type(piece,location);
+    new_state.make_move(chosen_Piece, location);
+    Move_Type type = current_state.move_type(chosen_Piece,location);
     vector<Move>& moves = Turn() == WHITE ? white_moves : black_moves;
-    moves.push_back(Move(current_state,new_state,piece.location,location,piece.type,
-                         current_state.move_type(piece,location)));
+    moves.push_back(Move(current_state,new_state,chosen_Piece.location,location,chosen_Piece.type,
+                         current_state.move_type(chosen_Piece,location)));
 
     current_state = new_state;
     if((type!=PROMOTION)&&(type!=PROMOTION_AND_CAPTURE))
@@ -131,7 +132,7 @@ bool Game::isPiece_chosen() const {
     return piece_chosen_check;
 }
 
-vector<Location> Game::current_state_available_locations(Piece piece)
+vector<Location> Game::current_state_available_locations(const Piece& piece) const
 {
     return current_state.available_locations(piece);
 }
@@ -148,7 +149,7 @@ void Game::setChosen_Piece(const Piece &chosen_Piece) {
     Game::chosen_Piece = chosen_Piece;
 }
 
-void Game::promotion(Location location, piece_type type) {
+void Game::promotion(const Location& location, const piece_type type) {
     current_state.promotion(location,type);
     update_result();
 }

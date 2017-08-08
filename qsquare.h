@@ -20,7 +20,7 @@ class Qsquare : public QPushButton
     virtual void leaveEvent( QEvent* e );
     void promotion();
     void mark_Qsquare();
-    bool possible_square_choice_check();
+    bool possible_square_choice_check() const;
 
     Q_OBJECT
 public:
