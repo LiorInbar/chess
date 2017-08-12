@@ -63,7 +63,9 @@ State initial_state(){
 
 
 
-Game::Game(const State &current_state) : current_state(current_state) {}
+Game::Game(const State &current_state) : current_state(current_state) {
+    states.push_back(current_state);
+}
 
 Game::Game():current_state(initial_state()){
     //  State state=initial_state();
@@ -71,7 +73,7 @@ Game::Game():current_state(initial_state()){
 }
 
 Color Game::Turn() const{
-    return white_moves.size()>black_moves.size() ? BLACK : WHITE;
+    return current_state.getTurn();
 }
 
 void Game::update_result() {
@@ -87,29 +89,11 @@ void Game::move(const Location& location) {
     State new_state(current_state);
     new_state.make_move(chosen_Piece, location);
     Move_Type type = current_state.move_type(chosen_Piece,location);
-    vector<Move>& moves = Turn() == WHITE ? white_moves : black_moves;
-    moves.push_back(Move(current_state,new_state,chosen_Piece.location,location,chosen_Piece.type,
-                         current_state.move_type(chosen_Piece,location)));
-
     current_state = new_state;
-    if((type!=PROMOTION)&&(type!=PROMOTION_AND_CAPTURE))
+    if((type!=PROMOTION)&&(type!=PROMOTION_AND_CAPTURE)){
         update_result();
-}
-
-const vector<Move> &Game::getWhite_moves() const {
-    return white_moves;
-}
-
-void Game::setWhite_moves(const vector<Move> &white_moves) {
-    Game::white_moves = white_moves;
-}
-
-const vector<Move> &Game::getBlack_moves() const {
-    return black_moves;
-}
-
-void Game::setBlack_moves(const vector<Move> &black_moves) {
-    Game::black_moves = black_moves;
+        states.push_back(current_state);
+    }
 }
 
 const State &Game::getCurrent_state() const {
@@ -149,9 +133,10 @@ void Game::setChosen_Piece(const Piece &chosen_Piece) {
     Game::chosen_Piece = chosen_Piece;
 }
 
-void Game::promotion(const Location& location, const piece_type type) {
-    current_state.promotion(location,type);
+void Game::promotion(piece_type type) {
+    current_state.promotion(type);
     update_result();
+    states.push_back(current_state);
 }
 
 string result_to_string(Result result){

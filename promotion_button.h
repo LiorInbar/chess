@@ -7,28 +7,21 @@
 #include "game.h"
 
 class Qsquare;
-void openQboard(Qsquare);
+class Qgame;
 
 class promotion_button : public QPushButton
 {
     Game* game;
-    vector<vector<Qsquare*>>& Qboard;
-
     Q_OBJECT
 public:
 
-    explicit promotion_button(vector<vector<Qsquare*>>& board,QWidget *parent = nullptr);
-
-    Game *getGame() const;
-    void setGame(Game *value);
-
-    vector<vector<Qsquare *> > &getQboard() const;
-    void setQboard(const vector<vector<Qsquare *> > &value);
+    explicit promotion_button(Game* game, QWidget *parent = nullptr);
 
 signals:
 
 public slots:
 
+    /*Handler of clicking events on the button*/
     void promotion_clicked(bool checked);
 
 };

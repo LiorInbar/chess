@@ -4,27 +4,51 @@
 #include <QTextStream>
 
 QString icons_dir("C:/QtProjects/QtChess/icons/");
-
 bool shutdown_board = false;
+void piece_chosen(Qsquare* qsquare);
+void abort_piece_chosen(Qgame* qgame);//todo
+void qgame_move(Qgame* qgame,const Location& location);
 
+Qsquare::Qsquare(Game *game, const Location& location, QWidget *parent) :
+    QPushButton(parent),location(location),game(game){
 
-Qsquare::Qsquare( vector<vector<Qsquare*>>& board,QWidget *parent) :
-    QPushButton(parent), Qboard(board){
-
+    //create signal-slot
     connect(this,SIGNAL(clicked(bool)),this,SLOT(Qsquare_clicked(bool)));
 }
 
 bool Qsquare::possible_square_choice_check() const{
 
     Square square = game->getCurrent_state().getSquare(location);
-    return (!(game->isPiece_chosen())&&(!shutdown_board)
-    &&(!(square.is_empty()))&&(square.piece.color==game->Turn()));
+    return (!(game->isPiece_chosen())&& //no piece chosen
+            (!shutdown_board)&& //board open
+            (!(square.is_empty()))&& //chsen square has a piece of the current player
+            (square.piece.color==game->Turn()));
 }
 
 
+Location Qsquare::getLocation() const
+{
+    return location;
+}
+
+void Qsquare::setLocation(const Location &value)
+{
+    location = value;
+}
+
+Game *Qsquare::getGame() const
+{
+    return game;
+}
+
+void Qsquare::setGame(Game *value)
+{
+    game = value;
+}
+
 void Qsquare::enterEvent( QEvent* e ){
     if(possible_square_choice_check())
-         mark_Qsquare();
+        mark_Qsquare();
 }
 
 void Qsquare::leaveEvent(QEvent *e){
@@ -33,100 +57,43 @@ void Qsquare::leaveEvent(QEvent *e){
 }
 
 
-void Qsquare::promotion()
-{
-    parentWidget()->findChild<QPlainTextEdit*>("messages")->setPlainText(QString("choose piece for promotion"));
-    Color color = game->getChosen_Piece().color;
-    string pieces_names[] = {"queen","rook","knight","bishop"};
-
-    for(string piece_name:pieces_names){
-         string piece_and_color_name(color_to_string(color)+"_"+piece_name);
-         promotion_button* button = parentWidget()->findChild<promotion_button*>(QString::fromStdString(piece_name));
-         QIcon icon(icons_dir+QString::fromStdString(piece_and_color_name));
-         button->setIcon(icon);
-         button->setVisible(true);
-    }
-    shutdown_board=true;
-}
-
-
- void Qsquare::setLocation(const Location location){
-     Qsquare::location=location;
- }
-
- void Qsquare::setGame(Game* game){
-     Qsquare::game=game;
- }
-
 void Qsquare::update_Qsquare(){
+
+    //set the color of the qsquare
     if((location.row+location.column)%2==0)
          setStyleSheet("background-color:mediumblue;");
     else
          setStyleSheet("background-color:sienna;");
+    //set the icon of the current piece in the square
     Square square = game->getCurrent_state().getSquare(location);
     if(!(square.is_empty())){
         string piece_name(color_to_string(square.piece.color)+"_"+piece_type_to_string(square.piece.type));
-        setIcon(QIcon(icons_dir+QString::fromStdString(piece_name)+".png"));
+        setIcon(QIcon(icons_dir+QString::fromStdString(piece_name)+".png")); //icons path
         setIconSize(QSize(40,40));
     }
-    else{
+    else //square is empty
       setIcon(QIcon());
-    }
 }
 
 void Qsquare::Qsquare_clicked(bool checked){
-
-     Square square = game->getCurrent_state().getSquare(location);
-    if(shutdown_board)
+    if(shutdown_board) //board close
         return;
-    if(possible_square_choice_check()){
-           game->setChosen_Piece(square.piece);
-           game->setPiece_chosen_check(true);
-           vector<Location> locations = game->current_state_available_locations(game->getChosen_Piece());
-           for(Location location:locations)
-              getQboard()[location.row][location.column]->mark_Qsquare();
-           return;
-         }
-    vector<Location> locations = game->current_state_available_locations(game->getChosen_Piece());
-    Location chosen_piece_location = game->getChosen_Piece().location;
-   if (chosen_piece_location==location){
-        game->setPiece_chosen_check(false);
-        for(Location location:locations)
-           getQboard()[location.row][location.column]->update_Qsquare();
+    if(possible_square_choice_check()){ //piece chosen
+        piece_chosen(this);
         return;
     }
-    if(std::find(locations.begin(), locations.end(), location) != locations.end()) {
-      Move_Type type = game->getCurrent_state().move_type(game->getChosen_Piece(),location);
-      game->move(location);
-      game->setPiece_chosen_check(false);
-      for(Location location:locations){
-         getQboard()[location.row][location.column]->update_Qsquare();
-      }
-
-      Qboard[chosen_piece_location.row][chosen_piece_location.column]->update_Qsquare();
-      switch (type) {
-      case QUEENSIDE_CASTLING:
-          Qboard[location.row][A]->update_Qsquare();
-          Qboard[location.row][D]->update_Qsquare();
-          break;
-      case KINGSIDE_CASTLING:
-          Qboard[location.row][F]->update_Qsquare();
-          Qboard[location.row][H]->update_Qsquare();
-          break;
-      case EN_PASSANT:
-          game->getChosen_Piece().color==WHITE ?
-              Qboard[location.row-1][location.column]->update_Qsquare() :
-              Qboard[location.row+1][location.column]->update_Qsquare();
-          break;
-      case PROMOTION:
-          promotion();
-          return;
-      case PROMOTION_AND_CAPTURE:
-          promotion();
-          return;
-      }
-      update_message();
-   }
+     //location of the chosen piece
+    Location chosen_piece_location = game->getChosen_Piece().location;
+    //player press on the chosen piece location - abort piece choice
+   if (chosen_piece_location==location){
+        abort_piece_chosen((Qgame*)parentWidget());
+        return;
+    }
+   //availale locations of the chosen piece
+   vector<Location> locations = game->current_state_available_locations(game->getChosen_Piece());
+   //if player press on one of the piece available locations - make move
+    if(std::find(locations.begin(), locations.end(), location) != locations.end())
+          qgame_move((Qgame*)parentWidget(),location);
 }
 
 void Qsquare::mark_Qsquare(){
@@ -135,38 +102,5 @@ void Qsquare::mark_Qsquare(){
 
 }
 
-
-void openQboard(Qsquare *qsquare){
-     shutdown_board = false;
-}
-
-void end_promotion(Qsquare *square){
-
-    square->update_Qsquare();
-    openQboard( square);
-    square->parentWidget()->findChild<promotion_button*>("queen")->setVisible(false);
-    square->parentWidget()->findChild<promotion_button*>("rook")->setVisible(false);
-    square->parentWidget()->findChild<promotion_button*>("knight")->setVisible(false);
-    square->parentWidget()->findChild<promotion_button*>("bishop")->setVisible(false);
-    square->update_message();
-}
-
-void Qsquare::update_message(){
-
-    QPlainTextEdit* message_board = parentWidget()->findChild<QPlainTextEdit*>("messages");
-    if(game->getResult() != IN_PROGRESS)
-        message_board->setPlainText( QString::fromStdString(result_to_string(game->getResult())));
-    else
-      message_board->setPlainText( QString::fromStdString(color_to_string(game->Turn())+" player turn"));
-
-}
-
-vector<vector<Qsquare *> > &Qsquare::getQboard() const{
-    return Qboard;
-}
-
-void Qsquare::setQboard(const vector<vector<Qsquare *> > &value){
-    Qboard = value;
-}
 
 
