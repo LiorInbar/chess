@@ -810,3 +810,19 @@ void print_board(const State& state){
 }
 
 
+/*two states are equal if every square has the same piece (type and color)
+ * and the same player is currently play*/
+bool operator==(const State &state1, const State &state2){
+
+    if(state1.getTurn()!=state2.getTurn())
+        return false;
+    for (int row = 0; row <= 7; row++) {
+        for (int column = A; column <= H; column++) {
+            if(!(state1.getSquare(Location(row,column))==
+               state2.getSquare(Location(row,column))))
+                    return false;
+        }
+    }
+    return true;
+
+}

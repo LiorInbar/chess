@@ -2,7 +2,18 @@
 
 void promotion(promotion_button* button);
 
-promotion_button::promotion_button(Game *game, QWidget *parent) :
+
+Game &promotion_button::getGame() const
+{
+    return game;
+}
+
+void promotion_button::setGame(const Game &value)
+{
+    game = value;
+}
+
+promotion_button::promotion_button(Game &game, QWidget *parent) :
     QPushButton(parent), game(game){
 
     connect(this,SIGNAL(clicked(bool)),this,SLOT(promotion_clicked(bool)));

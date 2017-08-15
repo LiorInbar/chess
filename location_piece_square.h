@@ -49,6 +49,7 @@ struct Piece {
 
 };
 
+bool operator==(const Piece& square1, const Piece& square2);
 
 // chess board square
 
@@ -64,6 +65,9 @@ struct Square {
         return empty;
     }
 };
+
+bool operator==(const Square& square1, const Square& square2);
+
 
 //create string representation for new data types
 string color_to_string(Color color);

@@ -144,6 +144,10 @@ public:
     void setPromotion_location(const Location &value);
 };
 
+/*check if two states identical (used for the 3 identical states rule)*/
+bool operator==(const State& state1, const State& state2);
+
+
 /* print the board of 'state' (for testing purposes).*/
 void print_board(const State& state);
 

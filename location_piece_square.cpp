@@ -29,6 +29,7 @@ string piece_type_to_string(piece_type type){
     }
 }
 
+
 string location_to_string(const Location& location){
     return string("<<location.row<<","<<location.column<<");
 }
@@ -36,4 +37,17 @@ string location_to_string(const Location& location){
 bool operator==(const Location& location1, const Location& location2){
     return location1.row == location2.row &&
            location1.column == location2.column;
+}
+
+bool operator==(const Square &square1, const Square &square2)
+{
+    if(square1.is_empty())
+        return square2.is_empty();
+    return ((!square2.is_empty())&&(square1.piece==square2.piece));
+}
+
+bool operator==(const Piece &piece1, const Piece &piece2)
+{
+    return ((piece1.type==piece2.type)
+            &&(piece1.color==piece2.color));
 }

@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QTextStream>
+#include <memory>
 #include "game.h"
 
 class Qsquare;
@@ -11,11 +12,16 @@ class Qgame;
 
 class promotion_button : public QPushButton
 {
-    Game* game;
+    Game& game;
     Q_OBJECT
 public:
 
-    explicit promotion_button(Game* game, QWidget *parent = nullptr);
+    explicit promotion_button(Game& game, QWidget *parent = nullptr);
+
+
+
+    Game &getGame() const;
+    void setGame(const Game &value);
 
 signals:
 

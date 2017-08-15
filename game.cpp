@@ -89,6 +89,11 @@ void Game::move(const Location& location) {
     State new_state(current_state);
     new_state.make_move(chosen_Piece, location);
     Move_Type type = current_state.move_type(chosen_Piece,location);
+    //update the counter of the moves without pawn moves or captures
+    if(type==CAPTURE || chosen_Piece.type==PAWN)
+        moves_without_capture_or_piece_move = 0;
+    else
+        moves_without_capture_or_piece_move++;
     current_state = new_state;
     if((type!=PROMOTION)&&(type!=PROMOTION_AND_CAPTURE)){
         update_result();

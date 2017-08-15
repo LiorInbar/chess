@@ -12,11 +12,13 @@ SOURCES += \
     state.cpp \
     qsquare.cpp \
     promotion_button.cpp \
-    qgame.cpp
+    qgame.cpp \
+    buttons.cpp
 HEADERS += \
     game.h \
     location_piece_square.h \
     state.h \
     qsquare.h \
     promotion_button.h \
-    qgame.h
+    qgame.h \
+    buttons.h

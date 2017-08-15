@@ -14,7 +14,7 @@
 class Qsquare : public QPushButton
 {
     Location location; //the location (board coordinates) of the Qsquare.
-    Game* game;
+    Game& game;
 
     /*handlers of enter and leave events*/
     virtual void enterEvent( QEvent* e );
@@ -32,7 +32,7 @@ public:
      * and therefore the player can choose it*/
     bool possible_square_choice_check() const;
 
-    explicit Qsquare(Game* game,const Location& location, QWidget *parent = nullptr);
+    explicit Qsquare(Game& game,const Location& location, QWidget *parent = nullptr);
 
     Location getLocation() const;
     void setLocation(const Location &value);
@@ -41,8 +41,9 @@ public:
     void update_Qsquare();
 
 
-    Game *getGame() const;
-    void setGame(Game *value);
+
+    Game &getGame() const;
+    void setGame(const Game &value);
 
 signals:
 

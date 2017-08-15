@@ -15,6 +15,7 @@ class Game{
     bool piece_chosen_check = false; // flag for indicating wehther the current player chose a piece to play
     Piece chosen_Piece; //the piece which been chosen (if been chosen).
     State current_state;
+    int moves_without_capture_or_piece_move = 0;
 
     void update_result(); //update the result property after a move.
 

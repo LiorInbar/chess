@@ -9,7 +9,7 @@ void piece_chosen(Qsquare* qsquare);
 void abort_piece_chosen(Qgame* qgame);//todo
 void qgame_move(Qgame* qgame,const Location& location);
 
-Qsquare::Qsquare(Game *game, const Location& location, QWidget *parent) :
+Qsquare::Qsquare(Game &game, const Location& location, QWidget *parent) :
     QPushButton(parent),location(location),game(game){
 
     //create signal-slot
@@ -18,11 +18,11 @@ Qsquare::Qsquare(Game *game, const Location& location, QWidget *parent) :
 
 bool Qsquare::possible_square_choice_check() const{
 
-    Square square = game->getCurrent_state().getSquare(location);
-    return (!(game->isPiece_chosen())&& //no piece chosen
+    Square square = game.getCurrent_state().getSquare(location);
+    return (!(game.isPiece_chosen())&& //no piece chosen
             (!shutdown_board)&& //board open
             (!(square.is_empty()))&& //chsen square has a piece of the current player
-            (square.piece.color==game->Turn()));
+            (square.piece.color==game.Turn()));
 }
 
 
@@ -36,12 +36,12 @@ void Qsquare::setLocation(const Location &value)
     location = value;
 }
 
-Game *Qsquare::getGame() const
+Game &Qsquare::getGame() const
 {
     return game;
 }
 
-void Qsquare::setGame(Game *value)
+void Qsquare::setGame(const Game &value)
 {
     game = value;
 }
@@ -65,7 +65,7 @@ void Qsquare::update_Qsquare(){
     else
          setStyleSheet("background-color:sienna;");
     //set the icon of the current piece in the square
-    Square square = game->getCurrent_state().getSquare(location);
+    Square square = game.getCurrent_state().getSquare(location);
     if(!(square.is_empty())){
         string piece_name(color_to_string(square.piece.color)+"_"+piece_type_to_string(square.piece.type));
         setIcon(QIcon(icons_dir+QString::fromStdString(piece_name)+".png")); //icons path
@@ -83,14 +83,14 @@ void Qsquare::Qsquare_clicked(bool checked){
         return;
     }
      //location of the chosen piece
-    Location chosen_piece_location = game->getChosen_Piece().location;
+    Location chosen_piece_location = game.getChosen_Piece().location;
     //player press on the chosen piece location - abort piece choice
    if (chosen_piece_location==location){
         abort_piece_chosen((Qgame*)parentWidget());
         return;
     }
    //availale locations of the chosen piece
-   vector<Location> locations = game->current_state_available_locations(game->getChosen_Piece());
+   vector<Location> locations = game.current_state_available_locations(game.getChosen_Piece());
    //if player press on one of the piece available locations - make move
     if(std::find(locations.begin(), locations.end(), location) != locations.end())
           qgame_move((Qgame*)parentWidget(),location);
