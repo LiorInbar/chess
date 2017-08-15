@@ -94,6 +94,7 @@ Qgame::Qgame(): game(Game())
 
 void Qgame::start_new_game()
 {
+    shut_down_buttons = false;
     QPlainTextEdit* messages = findChild<QPlainTextEdit*>("messages");
     messages->setPlainText(QString("white player turn"));
     Game new_game;
