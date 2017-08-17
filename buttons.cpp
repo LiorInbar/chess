@@ -1,51 +1,75 @@
 #include "buttons.h"
 
 bool shut_down_buttons = false;
-void surrender(Qgame* Qgame);
-void draw_offer(Qgame* Qgame);
-void response_draw_offer(response_button* button);
-void new_game(Qgame* qgame);
+void surrender(Game_GUI* Game_GUI);
+void draw_offer(Game_GUI* Game_GUI);
+void response_draw_offer(Response_button* button);
+void new_game(Game_GUI* qgame);
+void promotion(Promotion_button* button);
 
-
-surrender_button::surrender_button(QWidget *parent):QPushButton(parent)
+Surrender_button::Surrender_button(QWidget *parent):QPushButton(parent)
 {
     connect(this,SIGNAL(clicked(bool)),this,SLOT(surrender_clicked(bool)));
 
 }
 
-void surrender_button::surrender_clicked(bool checked)
+void Surrender_button::surrender_clicked(bool checked)
 {
     if(!shut_down_buttons)
-        surrender((Qgame *)parentWidget());
+        surrender((Game_GUI *)parentWidget());
 }
 
-draw_button::draw_button(QWidget *parent):QPushButton(parent)
+Draw_button::Draw_button(QWidget *parent):QPushButton(parent)
 {
     connect(this,SIGNAL(clicked(bool)),this,SLOT(draw_clicked(bool)));
 }
 
-void draw_button::draw_clicked(bool checked){
+void Draw_button::draw_clicked(bool checked){
     if(!shut_down_buttons)
-        draw_offer((Qgame *)parentWidget());
+        draw_offer((Game_GUI *)parentWidget());
 }
 
-response_button::response_button(QWidget *parent):QPushButton(parent)
+Response_button::Response_button(QWidget *parent):QPushButton(parent)
 {
     connect(this,SIGNAL(clicked(bool)),this,SLOT(response_clicked(bool)));
 
 }
 
-void response_button::response_clicked(bool checked){
+void Response_button::response_clicked(bool checked){
     response_draw_offer(this);
 }
 
-new_game_button::new_game_button(QWidget *parent):QPushButton(parent)
+New_game_button::New_game_button(QWidget *parent):QPushButton(parent)
 {
     connect(this,SIGNAL(clicked(bool)),this,SLOT(new_game_clicked(bool)));
 
 }
 
-void new_game_button::new_game_clicked(bool checked)
+void New_game_button::new_game_clicked(bool checked)
 {
-    new_game((Qgame *)parentWidget());
+    new_game((Game_GUI *)parentWidget());
+}
+
+
+
+Game &Promotion_button::getGame() const
+{
+    return game;
+}
+
+void Promotion_button::setGame(const Game &value)
+{
+    game = value;
+}
+
+Promotion_button::Promotion_button(Game &game, QWidget *parent) :
+    QPushButton(parent), game(game){
+
+    connect(this,SIGNAL(clicked(bool)),this,SLOT(promotion_clicked(bool)));
+
+}
+
+/*call game::promotion() with the piece type of the clicked promotion button. */
+void Promotion_button::promotion_clicked(bool checked){
+    promotion(this);
 }

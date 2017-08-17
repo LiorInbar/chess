@@ -3,14 +3,17 @@
 
 #include <QWidget>
 #include <QPushButton>
-class Qgame;
+#include "game.h"
+
+class Game_GUI;
+class Square_GUI;
 
 
-class surrender_button : public QPushButton
+class Surrender_button : public QPushButton
 {
     Q_OBJECT
 public:
-    explicit surrender_button(QWidget *parent = nullptr);
+    explicit Surrender_button(QWidget *parent = nullptr);
 
 signals:
 
@@ -19,11 +22,11 @@ public slots:
 };
 
 
-class draw_button : public QPushButton
+class Draw_button : public QPushButton
 {
     Q_OBJECT
 public:
-    explicit draw_button(QWidget *parent = nullptr);
+    explicit Draw_button(QWidget *parent = nullptr);
 
 signals:
 
@@ -31,11 +34,11 @@ public slots:
     void draw_clicked(bool checked);
 };
 
-class new_game_button : public QPushButton
+class New_game_button : public QPushButton
 {
     Q_OBJECT
 public:
-    explicit new_game_button(QWidget *parent = nullptr);
+    explicit New_game_button(QWidget *parent = nullptr);
 
 signals:
 
@@ -43,11 +46,11 @@ public slots:
     void new_game_clicked(bool checked);
 };
 
-class response_button : public QPushButton
+class Response_button : public QPushButton
 {
     Q_OBJECT
 public:
-    explicit response_button(QWidget *parent = nullptr);
+    explicit Response_button(QWidget *parent = nullptr);
 
 signals:
 
@@ -55,7 +58,27 @@ public slots:
     void response_clicked(bool checked);
 };
 
+class Promotion_button : public QPushButton
+{
+    Game& game;
+    Q_OBJECT
+public:
 
+    explicit Promotion_button(Game& game, QWidget *parent = nullptr);
+
+
+
+    Game &getGame() const;
+    void setGame(const Game &value);
+
+signals:
+
+public slots:
+
+    /*Handler of clicking events on the button*/
+    void promotion_clicked(bool checked);
+
+};
 
 
 #endif // BUTTONS_H
