@@ -29,7 +29,7 @@ State initial_state(){
         white_pieces.emplace_back(Piece(PAWN, WHITE, Location(1, c)));
     }
     for (int index = 0; index < white_pieces.size(); index++) {
-        white_pieces[index].id=index;
+        white_pieces[index].setId(index);
     }
 
     vector<Piece> black_pieces;
@@ -55,7 +55,7 @@ State initial_state(){
         black_pieces.emplace_back(Piece(PAWN, BLACK, Location(6, c)));
     }
     for (int index = 0; index < black_pieces.size(); index++) {
-        black_pieces[index].id=index;
+        black_pieces[index].setId(index);
     }
     return State(WHITE, white_pieces, black_pieces);
 
@@ -90,7 +90,7 @@ void Game::move(const Location& location) {
     new_state.make_move(chosen_Piece, location);
     Move_Type type = current_state.move_type(chosen_Piece,location);
     //update the counter of the moves without pawn moves or captures
-    if(type==CAPTURE || chosen_Piece.type==PAWN)
+    if(type==CAPTURE || chosen_Piece.getType()==PAWN)
         moves_without_capture_or_piece_move = 0;
     else
         moves_without_capture_or_piece_move++;

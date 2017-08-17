@@ -134,12 +134,12 @@ void piece_chosen(Qsquare *qsquare)
 {
      Game& game = qsquare->getGame();
     Square square = game.getCurrent_state().getSquare(qsquare->getLocation());
-    game.setChosen_Piece(square.piece);
+    game.setChosen_Piece(square.getPiece());
     game.setPiece_chosen_check(true);
     //mark the piece's available locations
     vector<Location> locations = game.current_state_available_locations(game.getChosen_Piece());
     for(Location location:locations)
-      ((Qgame*)(qsquare->parentWidget()))->getQboard()[location.row][location.column]->mark_Qsquare();
+      ((Qgame*)(qsquare->parentWidget()))->getQboard()[location.getRow()][location.getColumn()]->mark_Qsquare();
     return;
 
 }
@@ -150,7 +150,7 @@ void Qgame::begin_promotion(){
     findChild<QPlainTextEdit*>("messages")->setPlainText(QString("choose piece for promotion"));
 
     //create icons and open promotion buttons, and close the board
-    Color color = game.getChosen_Piece().color;
+    Color color = game.getChosen_Piece().getColor();
     string pieces_names[] = {"queen","rook","knight","bishop"};
     for(string piece_name:pieces_names){
          string piece_and_color_name(color_to_string(color)+"_"+piece_name);
@@ -215,7 +215,7 @@ void promotion(promotion_button *button)
         }
         //update promotion square and open the board
         Location location = qgame->game.getCurrent_state().getPromotion_location();
-        qgame->getQboard()[location.row][location.column]->update_Qsquare();
+        qgame->getQboard()[location.getRow()][location.getColumn()]->update_Qsquare();
         qgame->openQboard();
         qgame->update_message();
 
@@ -230,7 +230,7 @@ void abort_piece_chosen(Qgame *qgame)
     //unmark the available locations of the previously chosen pieces
     vector<Location> locations = game.current_state_available_locations(game.getChosen_Piece());
     for(Location location:locations)
-       qgame->getQboard()[location.row][location.column]->update_Qsquare();
+       qgame->getQboard()[location.getRow()][location.getColumn()]->update_Qsquare();
     return;
 }
 
@@ -241,32 +241,32 @@ void qgame_move(Qgame *qgame, const Location& location)
     Move_Type type = game.getCurrent_state().move_type(game.getChosen_Piece(),location);
     //get the chosen player available locations
     vector<Location> locations = game.current_state_available_locations(game.getChosen_Piece());
-    Location previous_location = game.getChosen_Piece().location;
+    Location previous_location = game.getChosen_Piece().getLocation();
     //make the move
     game.move(location);
 
     game.setPiece_chosen_check(false);
     //update the current location of the chosen piece and unmark marked squares
     for(Location loc:locations)
-       qgame->getQboard()[loc.row][loc.column]->update_Qsquare();
+       qgame->getQboard()[loc.getRow()][loc.getColumn()]->update_Qsquare();
     //update the previous location of the chosen piece
-    qgame->getQboard()[previous_location.row][previous_location.column]->update_Qsquare();
+    qgame->getQboard()[previous_location.getRow()][previous_location.getColumn()]->update_Qsquare();
 
     switch (type) {
     //if the move is castling, update the rook previous and current locations
     case QUEENSIDE_CASTLING:
-        qgame->getQboard()[location.row][A]->update_Qsquare();
-        qgame->getQboard()[location.row][D]->update_Qsquare();
+        qgame->getQboard()[location.getRow()][A]->update_Qsquare();
+        qgame->getQboard()[location.getRow()][D]->update_Qsquare();
         break;
     case KINGSIDE_CASTLING:
-        qgame->getQboard()[location.row][F]->update_Qsquare();
-        qgame->getQboard()[location.row][H]->update_Qsquare();
+        qgame->getQboard()[location.getRow()][F]->update_Qsquare();
+        qgame->getQboard()[location.getRow()][H]->update_Qsquare();
         break;
     //if the move is en_passant, update the location of the captured pawn
     case EN_PASSANT:
-        game.getChosen_Piece().color==WHITE ?
-            qgame->getQboard()[location.row-1][location.column]->update_Qsquare() :
-            qgame->getQboard()[location.row+1][location.column]->update_Qsquare();
+        game.getChosen_Piece().getColor()==WHITE ?
+            qgame->getQboard()[location.getRow()-1][location.getColumn()]->update_Qsquare() :
+            qgame->getQboard()[location.getRow()+1][location.getColumn()]->update_Qsquare();
         break;
   //if the move is promotion, start promotion process
     case PROMOTION:

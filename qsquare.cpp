@@ -22,7 +22,7 @@ bool Qsquare::possible_square_choice_check() const{
     return (!(game.isPiece_chosen())&& //no piece chosen
             (!shutdown_board)&& //board open
             (!(square.is_empty()))&& //chsen square has a piece of the current player
-            (square.piece.color==game.Turn()));
+            (square.getPiece().getColor()==game.Turn()));
 }
 
 
@@ -60,14 +60,14 @@ void Qsquare::leaveEvent(QEvent *e){
 void Qsquare::update_Qsquare(){
 
     //set the color of the qsquare
-    if((location.row+location.column)%2==0)
+    if((location.getRow()+location.getColumn())%2==0)
          setStyleSheet("background-color:mediumblue;");
     else
          setStyleSheet("background-color:sienna;");
     //set the icon of the current piece in the square
     Square square = game.getCurrent_state().getSquare(location);
     if(!(square.is_empty())){
-        string piece_name(color_to_string(square.piece.color)+"_"+piece_type_to_string(square.piece.type));
+        string piece_name(color_to_string(square.getPiece().getColor())+"_"+piece_type_to_string(square.getPiece().getType()));
         setIcon(QIcon(icons_dir+QString::fromStdString(piece_name)+".png")); //icons path
         setIconSize(QSize(40,40));
     }
@@ -83,7 +83,7 @@ void Qsquare::Qsquare_clicked(bool checked){
         return;
     }
      //location of the chosen piece
-    Location chosen_piece_location = game.getChosen_Piece().location;
+    Location chosen_piece_location = game.getChosen_Piece().getLocation();
     //player press on the chosen piece location - abort piece choice
    if (chosen_piece_location==location){
         abort_piece_chosen((Qgame*)parentWidget());
