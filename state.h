@@ -24,42 +24,6 @@ private:
     Location en_passant_location;
     Location promotion_location;
 
-    //implementations of the function direct course for specific piece
-
-    vector<Location> direct_course_pawn(const Piece& piece) const;
-    vector<Location> direct_course_knight(const Piece& piece) const;
-    vector<Location> direct_course_bishop(const Piece& piece) const;
-    vector<Location> direct_course_rook(const Piece& piece) const;
-    vector<Location> direct_course_queen(const Piece& piece) const;
-    vector<Location> direct_course_king(const Piece& piece) const;
-
-    //remove from the board the piece which locate on 'location'.
-    void remove_piece_in_location(const Location& location);
-
-    //perform a capture - the piece on location 'from' capture the piece on location 'to'.
-    void capture_piece(const Location& from, const Location& to);
-
-    /*perform en passant capture - the piece on location 'from' capture the piece on
-     * the row below location 'to' (if the capture piece is white) or the row above
-     * location 'to' (if the capture piece is white). see: https://en.wikipedia.org/wiki/En_passant.*/
-    void capture_piece_en_passant(const Location& from, const Location& to);
-
-    //move a piece from location 'from' to location 'to'.
-    void move_piece(const Location& from, const Location& to);
-
-    /*add a piece of type 'type' and color 'color' on 'location'.
-     used when performing promotion*/
-    void add_piece(piece_type type, const Location& location, Color color);
-
-    /*get the location of the king from color 'color'*/
-    Location king_location(Color color) const;
-
-    //perform king side castling.
-    void king_side_castling();
-
-    //perform queen side castling.
-    void queen_side_castling();
-
 public:
 
     State()= default;
@@ -82,12 +46,45 @@ public:
     void setEn_passant_flag(bool en_passant_flag);
     const Location &getEn_passant_location() const;
     void setEn_passant_location(const Location &en_passant_location);
-//------------------------------------------
     //get the square in the location 'location'
     Square getSquare (const Location& location) const;
+    Location getPromotion_location() const;
+    void setPromotion_location(const Location &value);
+//------------------------------------------
+  //functions that changes the state
+//-----------------------------------
 
-    //check if there is a piece from color 'color' on 'location'.
-    bool player_piece_on_location(const Location& location,Color color) const;
+    //perform king side castling.
+    void king_side_castling();
+
+    //perform queen side castling.
+    void queen_side_castling();
+
+    /*used when performing promotion*/
+   void add_piece(piece_type type, const Location& location, Color color);
+
+    /* make the move defined by moving 'piece' to 'location', possibly
+     * involving capture, castling, etc.*/
+    void make_move(Piece& piece, const Location& to);
+
+    /* Promote the pawn on 'location' to a piece of type ,type.*/
+    void promotion(piece_type type);
+
+    //remove from the board the piece which locate on 'location'.
+    void remove_piece_in_location(const Location& location);
+
+    //perform a capture - the piece on location 'from' capture the piece on location 'to'.
+    void capture_piece(const Location& from, const Location& to);
+
+    /*perform en passant capture - the piece on location 'from' capture the piece on
+     * the row below location 'to' (if the capture piece is white) or the row above
+     * location 'to' (if the capture piece is white). see: https://en.wikipedia.org/wiki/En_passant.*/
+    void capture_piece_en_passant(const Location& from, const Location& to);
+
+    //move a piece from location 'from' to location 'to'.
+    void move_piece(const Location& from, const Location& to);
+
+
 
     /*get all the locations which 'piece' has a "direct course" into them.
      * we say that a piece has a direct course to a location if it can
@@ -97,6 +94,27 @@ public:
      * course to this location and the resulting move will not put the piece's
      * player in a check position.*/
     vector<Location> direct_course(const Piece& piece) const;
+
+    //-------------------------------------------------------
+    //functions for geting information on the state
+    //------------------------------------------------------
+
+    //implementations of the function direct course for specific piece
+
+    vector<Location> direct_course_pawn(const Piece& piece) const;
+    vector<Location> direct_course_knight(const Piece& piece) const;
+    vector<Location> direct_course_bishop(const Piece& piece) const;
+    vector<Location> direct_course_rook(const Piece& piece) const;
+    vector<Location> direct_course_queen(const Piece& piece) const;
+    vector<Location> direct_course_king(const Piece& piece) const;
+
+    /*get the location of the king from color 'color'*/
+    Location king_location(Color color) const;
+
+
+    //check if there is a piece from color 'color' on 'location'.
+    bool player_piece_on_location(const Location& location,Color color) const;
+
 
     /*get the total number of available moves of the current player -
      * used to check if the current state is mate or stalemate*/
@@ -133,15 +151,6 @@ public:
      * player in a check position. See function 'direct course'*/
     vector<Location> available_locations(const Piece& piece) const;
 
-    /* make the move defined by moving 'piece' to 'location', possibly
-     * involving capture, castling, etc.*/
-    void make_move(Piece& piece, const Location& to);
-
-    /* Promote the pawn on 'location' to a piece of type ,type.*/
-    void promotion(piece_type type);
-
-    Location getPromotion_location() const;
-    void setPromotion_location(const Location &value);
 };
 
 /*check if two states identical (used for the 3 identical states rule)*/
