@@ -1,9 +1,11 @@
 #include "square_gui.h"
 #include <QIcon>
 #include <QString>
+#include <Qdir>
+
 #include <QTextStream>
 
-QString icons_dir("C:/QtProjects/QtChess/icons/");
+QString icons_dir(QDir::currentPath()+"/icons/");
 bool shutdown_board = false;
 void piece_chosen(Square_GUI* qsquare);
 void abort_piece_chosen(Game_GUI* qgame);//todo
