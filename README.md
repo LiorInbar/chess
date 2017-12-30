@@ -2,7 +2,7 @@
 C++ chess program with Qt GUI.
 
 ## Run and compile instructions:
-Run the program (on Windows): download the release folder and run chess.exe.  
+Run the program (on Windows): download chess.msi and choose destination folder, then run chess.exe.  
   
   
 Compile the code:  
